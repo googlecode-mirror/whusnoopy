@@ -9,7 +9,10 @@ const int MAX_FILE_NAME = 128;
 
 int printUsage() {
   printf("Usage:\n");
-  printf("  exDospy filename\n");
+  printf("  exDospy source_file target_file_prefix target_file_start_no\n");
+  printf("  -- target_file_name_prefix (optional): will use current time "
+         "instead if without this argument\n");
+  printf("  -- target_file_start_no (optional): will start from 0 default\n");
   return 0;
 }
 
@@ -88,11 +91,14 @@ int main(int argc, char* argv[]) {
   char buf[MAX_PAGE_LENGTH + 1];
   char page_content[MAX_PAGE_LENGTH + 1];
   char title[MAX_PAGE_LENGTH + 1];
+  int target_file_no = 0;
 
   if (argc < 2 ) {
     printUsage();
     exit(0);
-  } else if (argc < 3) {
+  }
+
+  if (argc < 3) {
     time_t t = time(NULL);
     struct tm tm;
     localtime_r(&t, &tm);
@@ -100,6 +106,13 @@ int main(int argc, char* argv[]) {
   } else {
     strncpy(target_file_name, argv[2], MAX_FILE_NAME);
   }
+
+  if (argc < 4) {
+    target_file_no = 0;
+  } else {
+    sscanf(argv[3], "%d", &target_file_no);
+  }
+  
 
   int offset = strlen(target_file_name) + 1;
   strcat(target_file_name, ".0000");
@@ -126,11 +139,10 @@ int main(int argc, char* argv[]) {
   title[tp - sp - 1] = '\0';
 
   FILE* target_file;
-  int target_file_no = 0;
 
   while (sp = strstr(sp, "<div style=\"padding-top: 4px;\">")) {
-    target_file_no++;
     sprintf(&target_file_name[offset], "%04d", target_file_no);
+    target_file_no++;
     target_file = fopen(target_file_name, "w");
     char date_time[MAX_PAGE_LENGTH + 1];
     char content[MAX_PAGE_LENGTH + 1];
