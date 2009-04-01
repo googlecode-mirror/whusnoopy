@@ -3,92 +3,8 @@
 #
 # author: cswenye@gmail.com                                
 #
-# This module used to get a topic page from bbs.dospy.com, then extract them as
-# each post with title/date_time infomations, if there are extra pages for this
-# topic, this module can get and extract them also
-#
 
-import sys, os, time, urllib2
-
-def main() :
-  argvs = sys.argv
-
-  if len(argvs) < 2 :
-    printUsage()
-    exit(-1)
-
-  url = "%s" % argvs[1]
-  start_point = url.find('thread-')
-  end_point = url.find('-1-1.html')
-  work_dir = '/home/cswenye/dospy_work/' + url[start_point:end_point]
-#
-#  if len(argvs) < 3 :
-#    # check = raw_input('Need use /home/cswenye/dospy_work as work dir? [y/n]')
-#    check = 'y'
-#    if len(check) == 0 or check[0] == 'Y' or check[0] == 'y' :
-#      work_dir = '/home/cswenye/dospy_work'
-#    else :
-#      work_dir = raw_input('Work dir you like (in absolutely path) :')
-#  else :
-#    work_dir = "%s" % argvs[2]
-#
-#  dir_name = workdir + '/' + url[start_point:end_point]
-
-  if os.path.exists(work_dir) :
-    os.chdir(work_dir)
-    os.system("rm -rf *")
-  else :
-    os.mkdir(work_dir)
-    os.chdir(work_dir)
-
-  filelist = crawl(url)
-
-  target_prefix = time.strftime("%Y%m%d-%H%M%S")
-  start_no = 0
-  for file in filelist :
-    extractPage(file, target_prefix, start_no)
-    start_no += 15
-
-def printUsage() :
-  print 'Usage:'
-  print '  ./allinone.py url [work_dir]'
-
-def crawl(url) :
-  filelist = []
-  # get web page, translate it to unicode and save it as a local file
-  filename = url[url.find('thread-'):]
-  getUrlAsFile(url, filename)
-  filelist.append(filename)
-
-  # if there is a multi pages topic, get the after pages, and extract them
-  pages = multiPage(filename)
-  if (pages > 1) :
-    for page_index in range(2, pages + 1) :
-      current_url = url[:url.find("-1-")] + "-%d-1.html" % page_index
-      filename = current_url[current_url.find('thread-'):]
-      getUrlAsFile(current_url, filename)
-      filelist.append(filename)
-
-  return filelist
-
-def getUrlAsFile(url, filename) :
-  wp = urllib2.urlopen(url)
-  wp_content = wp.read()
-  decode_content = wp_content.decode('gbk')
-  f = file(filename, "w")
-  f.write(decode_content.encode('utf-8'))
-
-def multiPage(filename) :
-  f = file(filename, "r")
-  content = f.read()
-  start_point = content.find('class="p_pages">&nbsp;1/')
-  if start_point != -1 :
-    start_point += 24
-    end_point = content.find('&nbsp;', start_point)
-    num = content[start_point:end_point]
-    return int(num)
-  else :
-    return 0
+import sys, time
 
 def extractPage(pagefile, target = time.strftime('%Y%m%d-%H%M%S'), start_no = 0) :
   print 'Extract %s to %s from %d' % (pagefile, target, start_no)
@@ -201,7 +117,6 @@ def convertHtmlChar(content) :
 
   return content
 
-# Main function call
 if __name__ == '__main__' :
-  main()
+  extractPage(sys.argv[1])
 
