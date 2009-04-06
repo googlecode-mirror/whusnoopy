@@ -7,7 +7,9 @@
 import sys, time
 
 def extractPage(pagefile, target = time.strftime('%Y%m%d-%H%M%S'), start_no = 0) :
-  print 'Extract %s to %s from %d' % (pagefile, target, start_no)
+#  print 'Extract %s to %s from %d' % (pagefile, target, start_no)
+
+  exfilelist = []
 
   pf = file(pagefile, "r")
   page_content = pf.read()
@@ -48,8 +50,11 @@ def extractPage(pagefile, target = time.strftime('%Y%m%d-%H%M%S'), start_no = 0)
                + "</TEXT>\n" \
                + "</BODY>\n" + "</DOC>\n"
     tf.write(outcontent)
+    exfilelist.append(target_file_name)
   
     time_start = page_content.find('<div style="padding-top: 4px;">', time_start)
+
+  return exfilelist
 
 def detectTitle(content) :
   tsp = content.find('<div class="subtable nav"')

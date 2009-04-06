@@ -14,7 +14,7 @@ def crawl(url) :
   filelist.append(filename)
 
   # if there is a multi pages topic, get the after pages, and extract them
-  pages = multiPage(filename)
+  pages = checkMultiPage(filename)
   if (pages > 1) :
     for page_index in range(2, pages + 1) :
       current_url = url[:url.find("-1-")] + "-%d-1.html" % page_index
@@ -31,7 +31,7 @@ def getUrlAsFile(url, filename) :
   f = file(filename, "w")
   f.write(decode_content.encode('utf-8'))
 
-def multiPage(filename) :
+def checkMultiPage(filename) :
   f = file(filename, "r")
   content = f.read()
   start_point = content.find('class="p_pages">&nbsp;1/')

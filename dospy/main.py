@@ -21,7 +21,7 @@ if len(argvs) < 2 :
 if len(argvs) < 3 :
   root_dir = '/home/cswenye/dospy_work/'
 else :
-  root_dir = argvs[2]
+  root_dir = "%s" % argvs[2]
 
 url = "%s" % argvs[1]
 work_dir = root_dir + url[url.find('thread-'):url.find('-1-1.html')]
@@ -33,12 +33,15 @@ else :
   os.mkdir(work_dir)
   os.chdir(work_dir)
 
-filelist = crawl(url)
+webpage_filelist = crawl(url)
 
+all_extracted_filelist = []
 target_prefix = time.strftime("%Y%m%d-%H%M%S")
 start_no = 0
-for file in filelist :
-  extractPage(file, target_prefix, start_no)
+for webpage in webpage_filelist :
+  extracted_filelist = extractPage(webpage, target_prefix, start_no)
+  for extracted_file in extracted_filelist :
+    all_extracted_filelist.append(extracted_file)
   start_no += 15
 
 def printUsage() :
