@@ -1,5 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+#
+# author: cswenye@gmail.com                                
+#
 
 import re, os
 from crawl import getUrlAsFile
