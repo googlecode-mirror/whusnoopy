@@ -39,10 +39,16 @@ def processSinglePage(url) :
 
   if os.path.exists(work_dir) :
     os.chdir(work_dir)
-    os.system("rm -rf *")
+#    os.system("rm -rf *")
   else :
     os.mkdir(work_dir)
     os.chdir(work_dir)
+
+  output_file_name = work_dir + os.sep + 'extract_result'
+#  print output_file_name, os.path.exists(output_file_name)
+  if os.path.exists(output_file_name) :
+    LOG('INFO', 'extracted finished, skip this page: %s' % url)
+    return
 
   LOG('INFO', 'start to process page %s' % url)
   webpage_filelist = crawl(url)
@@ -56,7 +62,7 @@ def processSinglePage(url) :
       all_extracted_filelist.append(extracted_file)
     start_no += 15
 
-  output_file = file('extract_result', 'w')
+  output_file = file(output_file_name, 'w')
   for ef in all_extracted_filelist :
     output_file.write('>>>>>>>v  %s  v>>>>>>>\n' % ef)
     words = segwords(ef, output_file)
@@ -78,9 +84,24 @@ def crawlWholeSite(site) :
     os.chdir(root_dir)
 
   LOG('INFO', 'start to process the whole site : %s' % site)
-  thread_list = spiderMain(site)
-  for thread in thread_list :
-    processSinglePage(thread)
+  thread_list_filename = root_dir + os.sep + 'list_of_threads'
+  if os.path.exists(thread_list_filename) :
+    LOG('INFO', 'forums extracted already, read threads from %s' % thread_list_filename)
+    thread_list_file = file(thread_list_filename, 'r')
+    thread_list = thread_list_file.read().split('\n')
+    thread_list_file.close()
+    for thread in thread_list :
+      processSinglePage(thread)
+  else :
+    LOG('INFO', 'forums not extracted already, extract forums and threads to %s' % thread_list_filename)
+    thread_list = spiderMain(site)
+    thread_list_file = file(thread_list_filename, 'w')
+    for thread in thread_list :
+      thread_list_file.write("%s\n" % thread)
+    thread_list_file.close()
+
+    for thread in thread_list :
+      processSinglePage(thread)
 
 def printUsage() :
   print 'Usage:'

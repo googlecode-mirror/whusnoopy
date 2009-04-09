@@ -31,15 +31,18 @@ def getUrlAsFile(url, filename) :
   # avoid re-crawl, if need update, remove the following line
   if os.path.exists(filename) :
     return True
-  wp = urllib2.urlopen(url)
-  wp_content = wp.read()
   try :
+    wp = urllib2.urlopen(url)
+    wp_content = wp.read()
     decode_content = wp_content.decode('gbk')
     f = file(filename, "w")
     f.write(decode_content.encode('utf-8'))
     f.close()
   except UnicodeDecodeError :
     LOG('ERROR', "Can't decode page %s" % url)
+    return False
+  except :
+    LOG('ERROR', "Unknown Error during crawl %s" % url)
     return False
 
   return True

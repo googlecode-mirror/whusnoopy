@@ -33,6 +33,7 @@ def spiderForum(site_prefix, forum_name) :
   LOG('INFO', 'start to process %s' % forum_name)
   forum_url = site_prefix + forum_name
   if getUrlAsFile(forum_url, forum_name) == False :
+    LOG('WARNING', "can not get %s, skip this forum" % forum_url)
     return []
 
   forum_file = file(forum_name, "r")
@@ -47,6 +48,7 @@ def spiderForum(site_prefix, forum_name) :
     thread = site_prefix + t[t.find("thread"):]
     thread_list.append(thread)
 
+  LOG('INFO', 'process forum successful')
   return thread_list
 
 if __name__ == '__main__' :
