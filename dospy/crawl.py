@@ -4,7 +4,8 @@
 # author: cswenye@gmail.com                                
 #
 
-import sys, urllib2
+import sys, urllib2, os
+from logging import LOG
 
 def crawl(url) :
   filelist = []
@@ -25,15 +26,26 @@ def crawl(url) :
   return filelist
 
 def getUrlAsFile(url, filename) :
+  # avoid re-crawl, if need update, remove the following line
+  if os.path.exists(filename) :
+    return False
   wp = urllib2.urlopen(url)
   wp_content = wp.read()
-  decode_content = wp_content.decode('gbk')
-  f = file(filename, "w")
-  f.write(decode_content.encode('utf-8'))
+  try :
+    decode_content = wp_content.decode('gbk')
+    f = file(filename, "w")
+    f.write(decode_content.encode('utf-8'))
+    f.close()
+  except UnicodeDecodeError :
+    LOG('ERROR', "Can't decode page %s" % url)
+    return True
+
+  return False
 
 def checkMultiPage(filename) :
   f = file(filename, "r")
   content = f.read()
+  f.close()
   start_point = content.find('class="p_pages">&nbsp;1/')
   if start_point != -1 :
     start_point += 24

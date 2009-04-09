@@ -6,8 +6,9 @@
 
 import re, os
 from crawl import getUrlAsFile
+from logging import LOG
 
-def spiderMain() :
+def spiderMain(site_prefix) :
   index_page_url = site_prefix + "index.php"
   index_page_filename = "index.html"
 
@@ -15,33 +16,42 @@ def spiderMain() :
 
   index_file = file(index_page_filename, "r")
   content = index_file.read()
+  index_file.close()
 
   forum_list = re.findall(ur'forum-[0-9]{1,3}-1\.html', content)
 
+  url_list = []
   for forum in forum_list :
-    spiderForum(forum)
+    thread_list = spiderForum(site_prefix, forum)
+    for thread in thread_list :
+      url_list.append(thread)
 
-def spiderForum(forum_name) :
+  return url_list
+
+def spiderForum(site_prefix, forum_name) :
+  LOG('INFO', 'start to process %s' % forum_name)
   forum_url = site_prefix + forum_name
-  getUrlAsFile(forum_url, forum_name)
+  if getUrlAsFile(forum_url, forum_name) :
+    return []
 
   forum_file = file(forum_name, "r")
   content = forum_file.read()
+  forum_file.close()
 
   content = content[content.find("论坛主题"):]
-  thread_list = re.findall(ur'<td class="f_folder"><a href="thread-[0-9]{1,10}-1-1\.html', content)
+  t_list = re.findall(ur'<td class="f_folder"><a href="thread-[0-9]{1,10}-1-1\.html', content)
 
-  print "\n>>>> threads in %s >>>>" % forum_name
-  for t in thread_list :
-    thread = t[t.find("thread"):]
-    print "%s" % thread
-  print "<<<<<<  END  <<<<<<"
+  thread_list = []
+  for t in t_list :
+    thread = site_prefix + t[t.find("thread"):]
+    thread_list.append(thread)
+
+  return thread_list
 
 if __name__ == '__main__' :
-  global site_prefix
-  site_prefix = "http://bbs.dospy.com/"
+  site = "http://bbs.dospy.com/"
 
-  work_dir = '/home/cswenye/dospy_work/'
+  work_dir = '/home/cswenye/work/'
 
   if os.path.exists(work_dir) :
     os.chdir(work_dir)
@@ -50,5 +60,5 @@ if __name__ == '__main__' :
     os.mkdir(work_dir)
     os.chdir(work_dir)
 
-  spiderMain()
+  spiderMain(site)
 

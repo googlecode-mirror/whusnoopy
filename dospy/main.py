@@ -11,40 +11,107 @@
 import sys, os, time
 from crawl import crawl
 from extract import extractPage
+from pymmseg import mmseg
+from tfidf import calcTf, calcTfIdf
+from spider import spiderMain
+from logging import LOG
 
-argvs = sys.argv
+# test part begin
+def segwords(filename) :
+  f = file(filename, 'r')
+  content = f.read()
+  title = content[content.find("<HEADLINE>") + 10 : content.find("</HEADLINE>")]
+  body =  content[content.find("<TEXT>") + 7 : content.find("</TEXT>") - 1]
+  print "title : %s" % title
+  print "body : %s" % body
+  print "----"
+  text = title * 2 + body
+  tokens = mmseg.Algorithm(text)
+  words = []
+  for token in tokens :
+    # print '%s [%d -> %d]' % (token.text, token.start, token.end)
+    words.append(token.text)
+  return words
+# test part end
 
-if len(argvs) < 2 :
-  printUsage()
-  exit(-1)
+def processSinglePage(url) :
+  work_dir = root_dir + url[url.find('thread-'):url.find('-1-1.html')]
 
-if len(argvs) < 3 :
-  root_dir = '/home/cswenye/dospy_work/'
-else :
-  root_dir = "%s" % argvs[2]
+  if os.path.exists(work_dir) :
+    os.chdir(work_dir)
+    os.system("rm -rf *")
+  else :
+    os.mkdir(work_dir)
+    os.chdir(work_dir)
 
-url = "%s" % argvs[1]
-work_dir = root_dir + url[url.find('thread-'):url.find('-1-1.html')]
+  webpage_filelist = crawl(url)
 
-if os.path.exists(work_dir) :
-  os.chdir(work_dir)
-  os.system("rm -rf *")
-else :
-  os.mkdir(work_dir)
-  os.chdir(work_dir)
+  all_extracted_filelist = []
+  target_prefix = time.strftime("%Y%m%d-%H%M%S")
+  start_no = 0
+  for webpage in webpage_filelist :
+    extracted_filelist = extractPage(webpage, target_prefix, start_no)
+    for extracted_file in extracted_filelist :
+      all_extracted_filelist.append(extracted_file)
+    start_no += 15
 
-webpage_filelist = crawl(url)
+# test part begin
+  for ef in all_extracted_filelist :
+    print '>>>>>>>>  %s  >>>>>>>>' % ef
+    words = segwords(ef)
+    tf = calcTf(words)
+    tfidf = calcTfIdf(tf)
+    for wp in tfidf :
+      if wp[1] == 0 :
+        break
+      print '  %s : %lf' % (wp[0], wp[1])
+    print '^^^^^^^^  %s  ^^^^^^^^\n' % ef
+# test part end
 
-all_extracted_filelist = []
-target_prefix = time.strftime("%Y%m%d-%H%M%S")
-start_no = 0
-for webpage in webpage_filelist :
-  extracted_filelist = extractPage(webpage, target_prefix, start_no)
-  for extracted_file in extracted_filelist :
-    all_extracted_filelist.append(extracted_file)
-  start_no += 15
+def crawlWholeSite(site) :
+  if os.path.exists(root_dir) :
+    os.chdir(root_dir)
+  else :
+    os.mkdir(root_dir)
+    os.chdir(root_dir)
+
+  LOG('INFO', 'start to process the whole site : %s' % site)
+  thread_list = spiderMain(site)
+  for thread in thread_list :
+    processSinglePage(thread)
 
 def printUsage() :
   print 'Usage:'
-  print '  ./allinone.py url [work_dir]'
+  print '  ./allinone.py [--url=] [--site=] [--work_dir=]'
+  print '    --url : if miss, crawl whole site defaultly'
+  print '    --site : if miss, crawl http://bbs.dospy.com/ defaultly'
+  print '    --work_dir : if miss, use /home/cswenye/work/ defaultly'
+
+if __name__ == '__main__' :
+  argvs = sys.argv[1:]
+
+  url = ''
+  site = 'http://bbs.dospy.com/'
+  global root_dir
+  root_dir = '/home/cswenye/work'
+
+  for argv in argvs :
+    if argv.startswith('--') :
+      if argv.startwith('--url=') :
+        url = argv[7:]
+      elif argv.startwith('--work_dir=') :
+        root_dir = argv[11:]
+      else :
+        printUsage()
+        exit(-1)
+    else :
+      printUsage()
+      exit(-1)
+
+  mmseg.dict_load_defaults()
+
+  if len(url) == 0 :
+    crawlWholeSite(site)
+  else :
+    processSinglePage(url)
 

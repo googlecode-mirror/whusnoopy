@@ -13,6 +13,7 @@ def extractPage(pagefile, target = time.strftime('%Y%m%d-%H%M%S'), start_no = 0)
 
   pf = file(pagefile, "r")
   page_content = pf.read()
+  pf.close()
 
   # detect title
   title = detectTitle(page_content)
@@ -50,6 +51,7 @@ def extractPage(pagefile, target = time.strftime('%Y%m%d-%H%M%S'), start_no = 0)
                + "</TEXT>\n" \
                + "</BODY>\n" + "</DOC>\n"
     tf.write(outcontent)
+    tf.close()
     exfilelist.append(target_file_name)
   
     time_start = page_content.find('<div style="padding-top: 4px;">', time_start)

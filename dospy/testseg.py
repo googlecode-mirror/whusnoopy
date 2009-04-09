@@ -6,11 +6,12 @@ import os, sys
 from pymmseg import mmseg
 
 argvs = sys.argv
+root_dir = "/home/cswenye/work/"
 
 if len(argvs) < 2 :
-  filename = "20090401-172019.0002"
+  filename = root_dir + "20090401-172019.0002"
 else :
-  filename = "%s" % argvs[1]
+  filename = root_dir + "%s" % argvs[1]
 
 f = file(filename, 'r')
 text = f.read()
