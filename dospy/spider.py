@@ -12,7 +12,8 @@ def spiderMain(site_prefix) :
   index_page_url = site_prefix + "index.php"
   index_page_filename = "index.html"
 
-  getUrlAsFile(index_page_url, index_page_filename)
+  if getUrlAsFile(index_page_url, index_page_filename) == False :
+    return []
 
   index_file = file(index_page_filename, "r")
   content = index_file.read()
@@ -31,7 +32,7 @@ def spiderMain(site_prefix) :
 def spiderForum(site_prefix, forum_name) :
   LOG('INFO', 'start to process %s' % forum_name)
   forum_url = site_prefix + forum_name
-  if getUrlAsFile(forum_url, forum_name) :
+  if getUrlAsFile(forum_url, forum_name) == False :
     return []
 
   forum_file = file(forum_name, "r")

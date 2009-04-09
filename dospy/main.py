@@ -17,14 +17,14 @@ from spider import spiderMain
 from logging import LOG
 
 # test part begin
-def segwords(filename) :
+def segwords(filename, output_file) :
   f = file(filename, 'r')
   content = f.read()
   title = content[content.find("<HEADLINE>") + 10 : content.find("</HEADLINE>")]
   body =  content[content.find("<TEXT>") + 7 : content.find("</TEXT>") - 1]
-  print "title : %s" % title
-  print "body : %s" % body
-  print "----"
+  output_file.write("title : %s\n" % title)
+  output_file.write("body : %s\n" % body)
+  output_file.write("----\n")
   text = title * 2 + body
   tokens = mmseg.Algorithm(text)
   words = []
@@ -35,7 +35,7 @@ def segwords(filename) :
 # test part end
 
 def processSinglePage(url) :
-  work_dir = root_dir + url[url.find('thread-'):url.find('-1-1.html')]
+  work_dir = root_dir + os.sep + url[url.find('thread-'):url.find('-1-1.html')]
 
   if os.path.exists(work_dir) :
     os.chdir(work_dir)
@@ -44,6 +44,7 @@ def processSinglePage(url) :
     os.mkdir(work_dir)
     os.chdir(work_dir)
 
+  LOG('INFO', 'start to process page %s' % url)
   webpage_filelist = crawl(url)
 
   all_extracted_filelist = []
@@ -55,18 +56,19 @@ def processSinglePage(url) :
       all_extracted_filelist.append(extracted_file)
     start_no += 15
 
-# test part begin
+  output_file = file('extract_result', 'w')
   for ef in all_extracted_filelist :
-    print '>>>>>>>>  %s  >>>>>>>>' % ef
-    words = segwords(ef)
+    output_file.write('>>>>>>>v  %s  v>>>>>>>\n' % ef)
+    words = segwords(ef, output_file)
     tf = calcTf(words)
     tfidf = calcTfIdf(tf)
     for wp in tfidf :
-      if wp[1] == 0 :
-        break
-      print '  %s : %lf' % (wp[0], wp[1])
-    print '^^^^^^^^  %s  ^^^^^^^^\n' % ef
-# test part end
+#      if wp[1] == 0 :
+#        break
+      output_file.write('  %s : %lf\n' % (wp[0], wp[1]))
+    output_file.write('=======^  %s  ^=======\n\n' % ef)
+
+  output_file.close()
 
 def crawlWholeSite(site) :
   if os.path.exists(root_dir) :

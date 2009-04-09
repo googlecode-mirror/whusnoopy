@@ -11,7 +11,9 @@ def crawl(url) :
   filelist = []
   # get web page, translate it to unicode and save it as a local file
   filename = url[url.find('thread-'):]
-  getUrlAsFile(url, filename)
+  if getUrlAsFile(url, filename) == False :
+    return []
+
   filelist.append(filename)
 
   # if there is a multi pages topic, get the after pages, and extract them
@@ -20,15 +22,15 @@ def crawl(url) :
     for page_index in range(2, pages + 1) :
       current_url = url[:url.find("-1-")] + "-%d-1.html" % page_index
       filename = current_url[current_url.find('thread-'):]
-      getUrlAsFile(current_url, filename)
-      filelist.append(filename)
+      if getUrlAsFile(current_url, filename) == True :
+        filelist.append(filename)
 
   return filelist
 
 def getUrlAsFile(url, filename) :
   # avoid re-crawl, if need update, remove the following line
   if os.path.exists(filename) :
-    return False
+    return True
   wp = urllib2.urlopen(url)
   wp_content = wp.read()
   try :
@@ -38,9 +40,9 @@ def getUrlAsFile(url, filename) :
     f.close()
   except UnicodeDecodeError :
     LOG('ERROR', "Can't decode page %s" % url)
-    return True
+    return False
 
-  return False
+  return True
 
 def checkMultiPage(filename) :
   f = file(filename, "r")
