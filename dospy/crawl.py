@@ -7,7 +7,7 @@
 import sys, urllib2, os
 from logging import LOG
 
-def crawl(url) :
+def crawl(url, max_pagenum = 10) :
   filelist = []
   # get web page, translate it to unicode and save it as a local file
   filename = url[url.find('thread-'):]
@@ -19,6 +19,8 @@ def crawl(url) :
   # if there is a multi pages topic, get the after pages, and extract them
   pages = checkMultiPage(filename)
   if (pages > 1) :
+    if pages > max_pagenum :
+      pages = max_pagenum
     for page_index in range(2, pages + 1) :
       current_url = url[:url.find("-1-")] + "-%d-1.html" % page_index
       filename = current_url[current_url.find('thread-'):]

@@ -62,6 +62,10 @@ def processSinglePage(url) :
       all_extracted_filelist.append(extracted_file)
     start_no += 15
 
+  if len(all_extracted_filelist) == 0 :
+    LOG('WARNING', 'Extract on %s not success, skip' % url)
+    return
+
   output_file = file(output_file_name, 'w')
   for ef in all_extracted_filelist :
     output_file.write('>>>>>>>v  %s  v>>>>>>>\n' % ef)
