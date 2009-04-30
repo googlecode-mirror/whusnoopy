@@ -184,10 +184,10 @@ def main() :
 
   file_path = args[0]
 
-  if not options.output:
-    extractPage(file_path, start_no=start_no)
-  else:
+  if options.output:
     extractPage(file_path, options.output, start_no)
+  else:
+    extractPage(file_path, start_no=start_no)
 
   return 0
 

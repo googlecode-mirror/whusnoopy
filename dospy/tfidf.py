@@ -4,7 +4,8 @@
 # author: cswenye@gmail.com                                
 #
 
-import os, sys
+import os
+import sys
 from math import log
 
 class idf :

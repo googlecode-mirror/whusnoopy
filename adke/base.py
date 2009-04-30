@@ -25,6 +25,12 @@ def LOGGER(filename='', level='INFO') :
   fh.setFormatter(formatter)
   log.addHandler(fh)
 
+  debug_filename = "/home/cswenye/log/adke.debug.log"
+  dfh = logging.FileHandler(debug_filename)
+  dfh.setLevel(logging.DEBUG)
+  dfh.setFormatter(formatter)
+  log.addHandler(dfh)
+
   return log
 
 if __name__ == '__main__' :
