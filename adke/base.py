@@ -3,6 +3,9 @@
 #
 # author: cswenye@gmail.com
 
+global TITLE_WEIGHT
+TITLE_WEIGHT = 2
+
 import logging
 import time
 
