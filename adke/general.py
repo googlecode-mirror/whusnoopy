@@ -8,35 +8,27 @@ import sys
 import optparse
 
 from xml.dom import minidom
-
-from base import logger
-from idf import idf
 from pymmseg import mmseg
 
-def generalAdKe(filename, output_path=""):
-  xmldoc = minidom.parse(filename)
- 
-  titles = []
-  for title_node in xmldoc.getElementsByTagName('title'):
-    if title_node.firstChild:
-      titles.append(title_node.firstChild.data)
+mmseg.dict_load_defaults()
+
+from base import *
+from adwordsselector import selectAdWords
+
+def generalAdKe(titles, bodys, refs):
   title = "".join(titles)
-  logger.info('Got titles as %(title)s' % locals())
-
-  bodys = []
-  for body_node in xmldoc.getElementsByTagName('body'):
-    bodys.append(body_node.firstChild.data)
-  for ref_node in xmldoc.getElementsByTagName('ref'):
-    if ref_node.firstChild:
-      bodys.append(body_node.firstChild.data)
   body = "".join(bodys)
-  logger.info('Got titles as %(body)s' % locals())
+  ref = "".join(refs)
+  all_text = title * 2 + body + ref
+  all_text = all_text.encode('utf-8')
 
-  title_tokens = mmseg.Algorithm(title)
-  body_tokens = mmseg.Algorithm(body)
+  all_tokens = mmseg.Algorithm(all_text)
 
-  all_tokens = title_tokens * TITLE_WEIGHT + body_tokens
-  return 0
+  tokens_rank = rankTokens(all_tokens)
+
+  ad_keywords = selectAdWords(tokens_rank, 6)
+
+  return ad_keywords
 
 def main():
   parser = optparse.OptionParser(usage='%prog [options] FILE')
@@ -51,14 +43,42 @@ def main():
     parser.error('Only one file may be specified.')
 
   file_path = args[0]
-
-  mmseg.dict_load_defaults()
-
   logger.info('Generate ads keywords for the whole page %s' % file_path)
-  if options.output:
-    generalAdKe(file_path, options.output)
+
+  xmldoc = minidom.parse(file_path)
+ 
+  titles = []
+  for title_node in xmldoc.getElementsByTagName('title'):
+    if title_node.firstChild:
+      titles.append(title_node.firstChild.data)
+
+  bodys = []
+  for body_node in xmldoc.getElementsByTagName('body'):
+    bodys.append(body_node.firstChild.data)
+
+  refs = []
+  for ref_node in xmldoc.getElementsByTagName('ref'):
+    if ref_node.firstChild:
+      refs.append(ref_node.firstChild.data)
+
+  adks = generalAdKe(titles, bodys, refs)
+
+  if not options.output:
+    for token in adks:
+      print token
   else:
-    generalAdKe(file_path)
+    doc = xmldoc
+    sidebar_ads = doc.createElement("sidebar_ads")
+    doc.documentElement.appendChild(sidebar_ads)
+    xmlIndent(doc, sidebar_ads, adks[:3])
+
+    banner_ads = doc.createElement("banner_ads")
+    doc.documentElement.appendChild(banner_ads)
+    xmlIndent(doc, banner_ads, adks[3:])
+
+    of = file(options.output, "w")
+    of.write(doc.toxml(encoding='utf-8'))
+    of.close
 
   return 0
 

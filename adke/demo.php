@@ -38,7 +38,9 @@ $doc->load( $xml_file );
   }
 ?>
 </div>
-<div id="bar">Advertising Keywords Extraction Demo</div>
+<div id="bar">
+  <a href="http://whusnoopy.vicp.net:25001/adke/">Advertising Keywords Extraction Demo</a>
+</div>
 
 <div id="main" align="left">
 
@@ -63,7 +65,6 @@ $doc->load( $xml_file );
 <?php
 $posts = $doc->getElementsByTagName( "post" );
 foreach( $posts as $post ) {
-  echo "<div class=\"pt\">\n";
   $post_id = $post->getAttribute( 'id' );
 
   $date_times = $post->getElementsByTagName( "date_time" );
@@ -72,8 +73,10 @@ foreach( $posts as $post ) {
   $titles = $post->getElementsByTagName( "title" );
   $title = $titles->item(0)->nodeValue;
 
-  echo "<a name=\"post_$post_id\"></a>";
-  echo "<div class=\"time\">$date_time<span class=\"pno\">$post_id#</span></div>\n";
+  echo "<a name=\"post_$post_id\"></a>\n";
+  echo "<div class=\"pt\">\n";
+  echo "<div class=\"time\">$date_time</div>\n";
+  echo "<span class=\"pno\">$post_id</span>\n";
   echo "$title\n";
   echo "</div>\n";
   
