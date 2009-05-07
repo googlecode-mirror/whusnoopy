@@ -3,12 +3,19 @@
 #
 # author: cswenye@gmail.com
 
-import sys
-
 from base import logger
+from idf import idf
 
-def my_cmp(E1, E2):
-  return -cmp(E1[1], E2[1])
+def scoreTokens(tokens, weight=1, scored_tokens={}):
+  '''Help function to generate the tf-idf value for each token in tokens,
+  return the sorted tokens dictionary
+  '''
+  for token in tokens:
+    if not scored_tokens.has_key(token):
+      scored_tokens[token] = 0
+    scored_tokens[token] += idf[token]*weight
+
+  return scored_tokens
 
 def isAdWords(token):
   return True
@@ -16,31 +23,57 @@ def isAdWords(token):
 def isStopWords(token):
   return False
 
-def selectAdWords(ranked_tokens, words_number=3):
-  tokens = 0
+def selectAdWords(scored_tokens, words_number=3):
+  ranked_tokens = sorted(scored_tokens.items(), \
+                         cmp=(lambda x, y: cmp(y[1], x[1])))
+  ad_words_count = 0
   ad_words = []
 
-  for token, score in sorted(ranked_tokens.items(), cmp=my_cmp):
+  for token, score in ranked_tokens:
     logger.debug('ad word candidate %(token)s(%(score)f)' % locals())
     if not isAdWords(token):
       logger.debug('%(token)s(%(score)f) is not ad word, skip it' % locals())
     elif isStopWords(token):
       logger.debug('%(token)s(%(score)f) is stopword, skip it' % locals())
-    elif tokens < words_number:
+    elif ad_words_count < words_number:
       ad_words.append(token)
-      tokens += 1
-      logger.debug('%(token)s(%(score)f) is selected as %(tokens)d ad word' % locals())
+      ad_words_count += 1
+      logger.debug('%(token)s(%(score)f) is selected as '
+                   '%(ad_words_count)d ad word' % locals())
     else:
-      # break
+      break
       logger.debug('%(token)s(%(score)f) is stopword, skip it' % locals())
 
   return ad_words
 
+def generateAdWords(posts, static_num=6, post_num=3):
+  '''Generate ad words from posts
+  return static_ads, post_ads
+    the static_ads is an ads words list for banner and sidebar
+    the post_ads is a dictionary contains ads words list for each post, like:
+      {'p1' : [adsword, adsword, ...],
+       'p2' : [adsword, adsword, ...]
+      }
+  '''
+
+  # generate the ads words for the whole page
+  for p in posts:
+    scored_tokens = scoreTokens(p['title_tokens'], 2)
+    scored_tokens = scoreTokens(p['body_tokens'], scored_tokens=scored_tokens)
+    for ref in p['refs']:
+      scored_tokens = scoreTokens(ref['tokens'], scored_tokens=scored_tokens)
+  static_ads = selectAdWords(scored_tokens, static_num)
+
+  post_ads = {}
+  for p in posts:
+    scored_tokens = {}
+     
+    ads = selectAdWords(scored_tokens, post_num)
+    key = 'p%d' % p['no']
+    post_ads[key] = ads
+
+  return static_ads, post_ads
+
 if __name__ == '__main__':
-  ranked_tokens = {
-    'blue' : 33,
-    'orange' : 25.3,
-    'red' : 34.2,
-    'yellow' : 28
-  }
-  sys.exit(selectAdWords(ranked_tokens))
+  print 'This is a help module'
+

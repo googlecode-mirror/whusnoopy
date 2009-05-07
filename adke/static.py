@@ -8,29 +8,10 @@ import sys
 import optparse
 
 from xml.dom import minidom
-from pymmseg import mmseg
 
-mmseg.dict_load_defaults()
-
-from base import *
-from utilscore import *
+from base import logger
 from utilxml import *
-from adwordsselector import selectAdWords
-
-def staticAdKe(titles, bodys, refs):
-  title = "".join(titles)
-  body = "".join(bodys)
-  ref = "".join(refs)
-  all_text = title * 2 + body + ref
-  all_text = all_text.encode('utf-8')
-
-  all_tokens = mmseg.Algorithm(all_text)
-
-  tokens_rank = scoreTokens(all_tokens)
-
-  ad_keywords = selectAdWords(tokens_rank, 6)
-
-  return ad_keywords
+from adwordsselector import generateAdWords
 
 def main():
   parser = optparse.OptionParser(usage='%prog [options] FILE')
@@ -50,11 +31,7 @@ def main():
   xmldoc = minidom.parse(file_path)
   posts = extractXmlFile(xmldoc)
  
-  titles = [p[2] for p in posts]
-  bodys = [p[3] for p in posts]
-  refs = [p[4][0][1] for p in posts if p[4]]
-
-  adks = staticAdKe(titles, bodys, refs)
+  adks, ua = generateAdWords(posts)
 
   if not options.output:
     for token in adks:

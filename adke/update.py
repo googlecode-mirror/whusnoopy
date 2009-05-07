@@ -8,20 +8,17 @@ import sys
 import optparse
 
 from xml.dom import minidom
-from pymmseg import mmseg
-
-mmseg.dict_load_defaults()
 
 from base import *
-from utilscore import *
 from utilxml import *
-from adwordsselector import selectAdWords
+from adwordsselector import generateAdWords
 
-def updatePost(posts, pwords, pi):
-  pass
+def updatePost(posts, post):
 
-def initPost(posts, pwords, pi):
-  pass
+  return posts
+
+def initPost(posts, post):
+  return posts
 
 def main():
   parser = optparse.OptionParser(usage='%prog [options] FILE')
@@ -41,23 +38,18 @@ def main():
   xmldoc = minidom.parse(file_path)
   posts = extractXmlFile(xmldoc)
 
-  pwords = {}
   for p in posts:
-    post_no = p[0]
-    pwords = initPost(posts, pwords, post_no)
-    for i in range(1,post_no):
-      updatePost(posts, pwords, i)
-    
-    print '========>'
-    print p[0], p[1], p[2].encode('utf-8')
-    print p[3].encode('utf-8')
-    for ref in p[4]:
-      print '----'
-      print ref[0], ref[1]
-    print '<<'
+    posts = initPost(posts, p)
+    posts = updatePost(posts, p)
+    sads, pads = generateAdWords(posts)
+
+    for ad in sads:
+      print ad
+    print '---->'
 
   return 0
 
 
 if __name__ == "__main__":
   sys.exit(main())
+

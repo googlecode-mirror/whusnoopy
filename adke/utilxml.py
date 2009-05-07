@@ -28,56 +28,79 @@ def xmlIndent(dom, node, adwords, indent=' ', newl='\n'):
 
 def extractXmlFile(xmldoc):
   '''Extract XML File to posts
-  return a posts list that every post is a tuple like:
-    ((post_no)d, (date_time)f, (title)s, (body)s, [ref list])
-  and in ref list, a ref is a (ref_no, ref_body) tuple
+  return a posts list that every post is a dictionary like:
+    {'no'     : %d,
+     'time'   : %f, # in seconds
+     'title'  : %s,
+     'title_tokens' : [token, token, ...], # seged tokens from title
+     'body'   : %s,
+     'body_tokens'  : [token, token, ...], # seged tokens from body
+     'refs'   : [ref, ref, ...]
+    }
+  and in refs list, a ref is a dictionary like:
+    {'id'    : %d,
+     'body'  : %s,
+     'tokens': [token, token, ...] # seged tokens from ref body
+    }
   '''
+  from pymmseg import mmseg
+  mmseg.dict_load_defaults()
+
   posts = []
   post_nodes = xmldoc.getElementsByTagName('post')
 
   for post_node in post_nodes:
-    post_no = int(post_node.getAttribute('id'))
+    post = {}
+    post['no'] = int(post_node.getAttribute('id'))
 
     date_time_node = post_node.getElementsByTagName('date_time')[0]
     if date_time_node.firstChild:
-      date_time = stringToSeconds(date_time_node.firstChild.data)
+      post['time'] = stringToSeconds(date_time_node.firstChild.data)
     else:
-      date_time = 0
+      post['time'] = 0
 
     title_node = post_node.getElementsByTagName('title')[0]
     if title_node.firstChild:
-      title = title_node.firstChild.data
+      post['title'] = title_node.firstChild.data
     else:
-      title = ""
+      post['title'] = ""
+    post['title_tokens'] = [t.text \
+        for t in mmseg.Algorithm(post['title'].encode('utf-8'))]
 
     body_node = post_node.getElementsByTagName('body')[0]
     if body_node.firstChild:
-      body = body_node.firstChild.data
+      post['body'] = body_node.firstChild.data
     else:
-      body = ""
+      post['body'] = ""
+    post['body_tokens'] = [t.text \
+        for t in mmseg.Algorithm(post['body'].encode('utf-8'))]
     
-    logger.debug('Got post_%(post_no)d "%(title)s" post on %(date_time)d: \
-                  %(body)s' % locals())
+    logger.debug('Got post_%d "%s" post on %f: %s' % \
+                 (post['no'], post['title'], post['time'], post['body']))
 
     refs = []
     for ref_node in post_node.getElementsByTagName('ref'):
-      ref_no = int(ref_node.getAttribute('id'))
+      ref = {}
+      ref['id'] = int(ref_node.getAttribute('id'))
 
-      # no refer (ref_no == 0)
-      if not ref_no:
+      # no refer (ref['id'] == 0)
+      if not ref['id']:
         continue
 
       if ref_node.firstChild:
-        ref_body = ref_node.firstChild.data
+        ref['body'] = ref_node.firstChild.data
       else:
-        ref_body = ""
-      logger.debug('Got post_%(post_no)d refer to post_%(ref_no)d: \
-                    %(ref_body)s' % locals())
+        ref['body'] = ""
+      ref['tokens'] = [t.text
+          for t in mmseg.Algorithm(ref['body'].encode('utf-8'))]
+      
+      logger.debug('Got refer to post_%d: %s' % (ref['id'], ref['body']))
+      refs.append(ref)
 
-      refs.append((ref_no, ref_body))
+    post['refs'] = refs
 
-    # Every elements extract already, append this to posts as a tuple
-    posts.append((post_no, date_time, title, body, refs))
+    # Every elements extract already, append this post dictionary to posts
+    posts.append(post)
 
   return posts
 

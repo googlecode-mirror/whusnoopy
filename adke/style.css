@@ -11,7 +11,7 @@ hr{border-top:1px solid #aaaaaa}
 font-size:14px;font-family:Verdana;color:#ffffff;text-align:center;font-weight:bold;
 background-color:#00aaff}
 #bar a{padding:7px 8px 7px 8px;color:#ffffff}
-#bar a:hover{background:#0055aa;color:#ffffcc;text-decoration:none}
+#bar a:hover{background:#0077cc;color:#ffffcc;text-decoration:none}
 #ft{clear:both;color:#666666;font-size:12px;font-family:Verdana;text-align:center}
 #ft a{color:#3333cc}
 
@@ -28,7 +28,7 @@ background-color:#00aaff}
 .pt{border-top:1px solid #00a7dd;background:#88c7ff}
 .pb{margin-bottom:10px;padding:8px 8px 8px 10px;border-bottom:1px solid #00a7dd}
 
-.time{float:right;margin-right:8px;padding:5px 2px 3px;font-style:italic}
+.time{float:right;margin-right:8px;padding:5px 2px 3px;font-size:12px;font-style:italic}
 .pno{margin-left:-8px;padding:5px 8px;border-right:2px solid #ffffff}
 
 .rt,.sref,.spa{padding-left:8px;height:20px;line-height:20px;font-size:12px;font-weight:bold}
