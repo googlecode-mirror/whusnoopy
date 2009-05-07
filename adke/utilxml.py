@@ -3,6 +3,8 @@
 #
 # author: cswenye@gmail.com
 
+from xml.dom import minidom
+
 from base import logger
 from base import stringToSeconds
 
@@ -26,7 +28,38 @@ def xmlIndent(dom, node, adwords, indent=' ', newl='\n'):
   text = dom.createTextNode(newl + newl)
   node.parentNode.appendChild(text)
 
-def extractXmlFile(xmldoc):
+def outputXmlAdsFile(file_path, sads, pads):
+  '''output ads keywords in sads and pads to a xml file on file_path
+  '''
+
+  logger.info('write ads to xml file %(file_path)s' % locals())
+  # a new document and the root
+  doc = minidom.Document()
+  ads = doc.createElement('ads')
+  doc.appendChild(ads)
+  text = doc.createTextNode('\n')
+  ads.appendChild(text)
+
+  # sidebar part
+  sidebar_ads = doc.createElement("sidebar")
+  doc.documentElement.appendChild(sidebar_ads)
+  xmlIndent(doc, sidebar_ads, sads[:3])
+
+  # banner part
+  banner_ads = doc.createElement("banner")
+  doc.documentElement.appendChild(banner_ads)
+  xmlIndent(doc, banner_ads, sads[3:])
+
+  for pno, pad in pads.items():
+    post_ads = doc.createElement(pno)
+    doc.documentElement.appendChild(post_ads)
+    xmlIndent(doc, post_ads, pad)
+
+  of = file(file_path, "w")
+  doc.writexml(of, indent=' ', encoding='utf-8')
+  of.close()
+
+def extractXmlFile(file_path):
   '''Extract XML File to posts
   return a posts list that every post is a dictionary like:
     {'no'     : %d,
@@ -43,9 +76,12 @@ def extractXmlFile(xmldoc):
      'tokens': [token, token, ...] # seged tokens from ref body
     }
   '''
+  logger.info('extract xml file %(file_path)s' % locals())
+
   from pymmseg import mmseg
   mmseg.dict_load_defaults()
 
+  xmldoc = minidom.parse(file_path)
   posts = []
   post_nodes = xmldoc.getElementsByTagName('post')
 

@@ -63,6 +63,8 @@ def generateAdWords(posts, static_num=6, post_num=3):
     for ref in p['refs']:
       scored_tokens = scoreTokens(ref['tokens'], scored_tokens=scored_tokens)
   static_ads = selectAdWords(scored_tokens, static_num)
+  adskeywords = " ".join(static_ads)
+  logger.info('got static ads as %(adskeywords)s' % locals())
 
   post_ads = {}
   for p in posts:
@@ -71,6 +73,8 @@ def generateAdWords(posts, static_num=6, post_num=3):
     ads = selectAdWords(scored_tokens, post_num)
     key = 'p%d' % p['no']
     post_ads[key] = ads
+    adskeywords = " ".join(ads)
+    logger.info('got %(key)s ads as %(adskeywords)s' % locals())
 
   return static_ads, post_ads
 
