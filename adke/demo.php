@@ -1,13 +1,21 @@
 <?php
 header("Content-Type: text/html; charset=utf-8");
 
-if (isset($_GET['xmlfile']))
-  $xml_file = $_GET['xmlfile'];
+if (isset($_GET['doc']))
+  $doc_file = $_GET['doc'];
 else
-  $xml_file = 'dospy.xml';
+  $doc_file = 'dospy.xml';
 
 $doc = new DOMDocument();
-$doc->load( $xml_file );
+$doc->load( $doc_file );
+
+if (isset($_GET['ads']))
+  $ads_file = $_GET['ads'];
+else
+  $ads_file = 'static.xml';
+
+$ads = new DOMDocument();
+$ads->load( $ads_file );
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -25,7 +33,7 @@ $doc->load( $xml_file );
 
 <div id="hd">
 <?php
-  $banner_ads = $doc->getElementsByTagName( "banner_ads" );
+  $banner_ads = $ads->getElementsByTagName( "banner" );
   if ( $banner_ads->length > 0 ) {
     echo "<div class=\"gat\">Banner Ads</div>\n";
     echo "<div class=\"gab\">\n";
@@ -46,7 +54,7 @@ $doc->load( $xml_file );
 
 <div id="right">
 <?php
-  $sidebar_ads = $doc->getElementsByTagName( "sidebar_ads" );
+  $sidebar_ads = $ads->getElementsByTagName( "sidebar" );
   if ( $sidebar_ads->length > 0 ) { 
     echo "<div class=\"gat\">Sidebar Ads</div>";
     echo "<div class=\"gab\">\n";
@@ -100,12 +108,12 @@ foreach( $posts as $post ) {
   $body = str_replace("\n", "<br />\n", $body);
   echo "$body\n";
 
-  $ads = $post->getElementsByTagName( "ads" );
-  if ( $ads->length > 0 ) {
+  $pads = $ads->getElementsByTagName( "p$post_id" );
+  if ( $pads->length > 0 ) {
     echo "<div class=\"spa\">";
     echo "<span class=\"spat\">Ads for Post $post_id</span>";
-    foreach ( $ads as $ad ) {
-      $keyword = $ad->nodeValue;
+    foreach ( $pads as $pad ) {
+      $keyword = $pad->nodeValue;
       echo "$keyword ";
     }
     echo "</div>\n";

@@ -6,40 +6,14 @@
 import logging
 import time
 
-from idf import idf
+def stringToSeconds(s):
+  return time.mktime(time.strptime(s, '%Y-%m-%d %H:%M'))
 
-def rankTokens(tokens):
-  tokens_rank = {}
-  for token in tokens:
-    text = token.text
-    if not tokens_rank.has_key(text):
-      tokens_rank[text] = 0
-    tokens_rank[text] += idf[text]
-  return tokens_rank
-
-# Indent the new ads node for pretty print
-def xmlIndent(dom, node, adwords, indent=' ', newl='\n'):
-  # Indent each child node
-  for token in adwords:
-    text = dom.createTextNode(newl + indent)
-    node.appendChild(text)
-    keyword = dom.createElement("keyword")
-    text = dom.createTextNode(token.decode('utf-8'))
-    keyword.appendChild(text)
-    node.appendChild(keyword)
-
-  # Newline before the end-tag
-  text = dom.createTextNode(newl)
-  node.appendChild(text)
-
-  # Newlines after the whole node
-  text = dom.createTextNode(newl + newl)
-  node.parentNode.appendChild(text)
-
-def LOGGER(filename='', level='DEBUG') :
+def LOGGER(filename='', level='DEBUG'):
   log = logging.getLogger(__name__)
   log.setLevel(getattr(logging, "%s" % level))
-  formatter = logging.Formatter('%(asctime)s [%(levelname)s] %(filename)s:%(lineno)d: %(message)s', '%y-%m-%d,%H:%M:%S')
+  formatter = logging.Formatter('%(asctime)s[%(levelname)s]%(filename)s: \
+                                 %(lineno)d: %(message)s', '%m-%d,%H:%M:%S')
 
 # Console Logger
   ch = logging.StreamHandler()
@@ -47,15 +21,17 @@ def LOGGER(filename='', level='DEBUG') :
   ch.setFormatter(formatter)
   log.addHandler(ch)
 
+  log_file_suffix = time.strftime('%Y%m%d%H%M%S') + ".log"
+
 # If log to file
   if len(filename) == 0 :
-    filename = "/home/cswenye/log/adke." + time.strftime('%Y%m%d%H%M%S') + ".log"
+    filename = "/home/cswenye/log/adke." + log_file_suffix
   fh = logging.FileHandler(filename)
   fh.setLevel(logging.INFO)
   fh.setFormatter(formatter)
   log.addHandler(fh)
   
-  debug_filename = "/home/cswenye/log/adke.debug." + time.strftime('%Y%m%d%H%M%S') + ".log"
+  debug_filename = "/home/cswenye/log/adke.debug." + log_file_suffix
   dfh = logging.FileHandler(debug_filename)
   dfh.setLevel(logging.DEBUG)
   dfh.setFormatter(formatter)
@@ -64,9 +40,7 @@ def LOGGER(filename='', level='DEBUG') :
   return log
 
 if __name__ == '__main__' :
-  LOG = LOGGER()
-  LOG.info("Hello, this is a logger module")
-  LOG.debug("this is a debug info")
+  print 'This is a help module, and it exited'
 else :
   logger = LOGGER()
 

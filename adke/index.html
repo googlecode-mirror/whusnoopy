@@ -15,7 +15,7 @@
   <a href="http://www.polyu.edu.hk" target="_blank"><img src="../polyu.jpg" alt="The Hong Kong Polytechnic University"></a><br />
 </div>
 <div id="bar">
-  <a href="http://whusnoopy.vicp.net/">HOME</a>&nbsp;|&nbsp;
+  <a href="http://whusnoopy.vicp.net/">HOME</a>
   <a href="http://whusnoopy.vicp.net:25001/adke/">Advertising Keywords Extraction Demo</a>
 </div>
 
@@ -24,7 +24,7 @@
 <div id="right">
 <div class="pt">Quick Links</div>
 <div class="pb">
-<a href="http://whusnoopy.vicp.net:25001/adke/demo.php?xmlfile=static.xml">static demo</a><br />
+<a href="http://whusnoopy.vicp.net:25001/adke/demo.php?doc=dospy.xml&ads=staticads.xml">static demo</a><br />
 </div>
 </div>
 
@@ -38,12 +38,19 @@
 &nbsp;&nbsp;&nbsp;&nbsp;We are pleasure to announce that the Advertising Keywords Extraction Demo (adke) can process static pages now.<br />
 <center>
 <form method="get" name="demogo" action="demo.php">
-<div class="sg">
- <span class="sgt">
- <input type="submit" value="Go!" class="button"/>
- </span>
- <input value="static.xml" title="Xml File" size="64" name="xmlfile" maxlength="128" class="query"/>
-</div>
+ <table><tbody>
+ <tr>
+  <td align="right">Document: </td>
+  <td><input value="dospy.xml" title="Document XML File" size="32" name="doc" maxlength="128" class="query"/></td>
+ </tr>
+ <tr>
+  <td align="right">Ads: </td>
+  <td><input value="staticads.xml" title="Ads XML File" size="32" name="ads" maxlength="128" class="query"/></td>
+ </tr>
+ <tr>
+  <td colspan="2" align="center"><input type="submit" value="Go!" class="button"/></td>
+ </tr>
+ </tbody></table>
 </form>
 </center>
 &nbsp;&nbsp;&nbsp;&nbsp;Just press the button 'Go!' to see the sample, or input anyother xml file name you want to see.<br />

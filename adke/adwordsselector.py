@@ -13,24 +13,26 @@ def my_cmp(E1, E2):
 def isAdWords(token):
   return True
 
+def isStopWords(token):
+  return False
+
 def selectAdWords(ranked_tokens, words_number=3):
   tokens = 0
   ad_words = []
 
   for token, score in sorted(ranked_tokens.items(), cmp=my_cmp):
     logger.debug('ad word candidate %(token)s(%(score)f)' % locals())
-    if tokens >= words_number:
-      continue
-    if isAdWords(token):
+    if not isAdWords(token):
+      logger.debug('%(token)s(%(score)f) is not ad word, skip it' % locals())
+    elif isStopWords(token):
+      logger.debug('%(token)s(%(score)f) is stopword, skip it' % locals())
+    elif tokens < words_number:
       ad_words.append(token)
       tokens += 1
       logger.debug('%(token)s(%(score)f) is selected as %(tokens)d ad word' % locals())
     else:
-      logger.debug('%(token)s(%(score)f) is not ad word, skip it' % locals())
-    '''
-    if tokens >= words_number:
-      break
-    '''
+      # break
+      logger.debug('%(token)s(%(score)f) is stopword, skip it' % locals())
 
   return ad_words
 

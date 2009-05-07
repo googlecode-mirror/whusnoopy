@@ -17,20 +17,11 @@ from scoreutil import *
 from xmlutil import *
 from adwordsselector import selectAdWords
 
-def staticAdKe(titles, bodys, refs):
-  title = "".join(titles)
-  body = "".join(bodys)
-  ref = "".join(refs)
-  all_text = title * 2 + body + ref
-  all_text = all_text.encode('utf-8')
+def updatePost(posts, pwords, pi):
+  pass
 
-  all_tokens = mmseg.Algorithm(all_text)
-
-  tokens_rank = scoreTokens(all_tokens)
-
-  ad_keywords = selectAdWords(tokens_rank, 6)
-
-  return ad_keywords
+def initPost(posts, pwords, pi):
+  pass
 
 def main():
   parser = optparse.OptionParser(usage='%prog [options] FILE')
@@ -49,25 +40,30 @@ def main():
 
   xmldoc = minidom.parse(file_path)
   posts = extractXmlFile(xmldoc)
- 
-  titles = [p[2] for p in posts]
-  bodys = [p[3] for p in posts]
-  refs = [p[4][0][1] for p in posts if p[4]]
 
-  adks = staticAdKe(titles, bodys, refs)
+  pwords = {}
+  for p in posts:
+    post_no = p[0]
+    pwords = initPost(posts, pwords, post_no)
+    for i in range(1,post_no):
+      updatePost(posts, pwords, i)
+    
+    print '========>'
+    print p[0], p[1], p[2].encode('utf-8')
+    print p[3].encode('utf-8')
+    for ref in p[4]:
+      print '----'
+      print ref[0], ref[1]
+    print '<<'
 
   if not options.output:
     for token in adks:
       print token
   else:
     doc = xmldoc
-    sidebar_ads = doc.createElement("sidebar_ads")
+    sidebar_ads = doc.createElement("ads")
     doc.documentElement.appendChild(sidebar_ads)
     xmlIndent(doc, sidebar_ads, adks[:3])
-
-    banner_ads = doc.createElement("banner_ads")
-    doc.documentElement.appendChild(banner_ads)
-    xmlIndent(doc, banner_ads, adks[3:])
 
     of = file(options.output, "w")
     of.write(doc.toxml(encoding='utf-8'))
@@ -75,5 +71,6 @@ def main():
 
   return 0
 
-if __name__ == "__main__" :
+
+if __name__ == "__main__":
   sys.exit(main())
