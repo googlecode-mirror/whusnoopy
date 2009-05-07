@@ -13,8 +13,8 @@ from pymmseg import mmseg
 mmseg.dict_load_defaults()
 
 from base import *
-from scoreutil import *
-from xmlutil import *
+from utilscore import *
+from utilxml import *
 from adwordsselector import selectAdWords
 
 def staticAdKe(titles, bodys, refs):

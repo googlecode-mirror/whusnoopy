@@ -13,8 +13,8 @@ from pymmseg import mmseg
 mmseg.dict_load_defaults()
 
 from base import *
-from scoreutil import *
-from xmlutil import *
+from utilscore import *
+from utilxml import *
 from adwordsselector import selectAdWords
 
 def updatePost(posts, pwords, pi):
@@ -55,19 +55,6 @@ def main():
       print '----'
       print ref[0], ref[1]
     print '<<'
-
-  if not options.output:
-    for token in adks:
-      print token
-  else:
-    doc = xmldoc
-    sidebar_ads = doc.createElement("ads")
-    doc.documentElement.appendChild(sidebar_ads)
-    xmlIndent(doc, sidebar_ads, adks[:3])
-
-    of = file(options.output, "w")
-    of.write(doc.toxml(encoding='utf-8'))
-    of.close
 
   return 0
 
