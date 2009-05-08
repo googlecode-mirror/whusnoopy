@@ -2,17 +2,20 @@
 header("Content-Type: text/html; charset=utf-8");
 
 if (isset($_GET['doc']))
-  $doc_file = $_GET['doc'];
+  $doc_prefix = $_GET['doc'];
 else
-  $doc_file = 'dospy.xml';
+  $doc_prefix = 'dospy';
+
+if (isset($_GET['p']))
+  $cp = $_GET['p'];
+else
+  $cp = 15;
+
+$doc_file = $doc_prefix.".xml";
+$ads_file = $doc_prefix.".ads$cp";
 
 $doc = new DOMDocument();
 $doc->load( $doc_file );
-
-if (isset($_GET['ads']))
-  $ads_file = $_GET['ads'];
-else
-  $ads_file = 'static.xml';
 
 $ads = new DOMDocument();
 $ads->load( $ads_file );
@@ -66,6 +69,20 @@ $ads->load( $ads_file );
     echo "</div>\n";
   }
 ?>
+<div class="gat">Navigate</div>
+<div class="gab">
+Input the post No. you want to go and click Go!.
+<center>
+<form method="get" name="demogo" action="demo.php">
+<div class="sqs">
+  <input type="submit" value="Go!" class="button"/>
+  <input value="<?php echo $cp==15?$cp:$cp+1; ?>" name="p" size="4" class="sqi" />
+  <input type="hidden" value="<?php echo "$doc_prefix"; ?>" name="doc" />
+</div>
+</form>
+</center>
+or click the Post No. on the top-left of each post.
+</div>
 </div>
 
 <div id="left">
@@ -74,6 +91,9 @@ $ads->load( $ads_file );
 $posts = $doc->getElementsByTagName( "post" );
 foreach( $posts as $post ) {
   $post_id = $post->getAttribute( 'id' );
+
+  if ($post_id > $cp)
+    break;
 
   $date_times = $post->getElementsByTagName( "date_time" );
   $date_time = $date_times->item(0)->nodeValue;
@@ -84,7 +104,7 @@ foreach( $posts as $post ) {
   echo "<a name=\"post_$post_id\"></a>\n";
   echo "<div class=\"pt\">\n";
   echo "<div class=\"time\">$date_time</div>\n";
-  echo "<span class=\"pno\">$post_id</span>\n";
+  echo "<span class=\"pno\"><a href=\"demo.php?doc=$doc_prefix&p=$post_id\">$post_id</a></span>\n";
   echo "$title\n";
   echo "</div>\n";
   

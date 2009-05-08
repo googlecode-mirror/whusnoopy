@@ -55,8 +55,9 @@ def outputXmlAdsFile(file_path, sads, pads):
     doc.documentElement.appendChild(post_ads)
     xmlIndent(doc, post_ads, pad)
 
+  xmlstr = doc.toxml(encoding='utf-8')
   of = file(file_path, "w")
-  doc.writexml(of, indent=' ', encoding='utf-8')
+  of.write(xmlstr)
   of.close()
 
 def extractXmlFile(file_path):

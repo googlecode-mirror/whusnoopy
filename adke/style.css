@@ -3,7 +3,7 @@ img{border:0}
 td{font-size:14px}
 div{font-size:12px;line-height:18px}
 a{color:#0000CC;text-decoration:none}
-a:hover{color:#cc0000;text-decoration:underline}
+a:hover {color:#cc0000;text-decoration:underline}
 hr{border-top:1px solid #aaaaaa}
 
 #hd{margin-top:8px;margin-bottom:4px;width:720px;font-family:Verdana;}
@@ -11,7 +11,7 @@ hr{border-top:1px solid #aaaaaa}
 font-size:14px;font-family:Verdana;color:#ffffff;text-align:center;font-weight:bold;
 background-color:#00aaff}
 #bar a{padding:7px 8px 7px 8px;color:#ffffff}
-#bar a:hover{background:#0077cc;color:#ffffcc;text-decoration:none}
+#bar a:hover {background:#0077cc;color:#ffffcc;text-decoration:none}
 #ft{clear:both;color:#666666;font-size:12px;font-family:Verdana;text-align:center}
 #ft a{color:#3333cc}
 
@@ -24,9 +24,9 @@ background-color:#00aaff}
 .gat,.gab{border-left:1px solid #a8bee7;border-right:1px solid #a8bee7}
 .pt,.pb{border-left:1px solid #00a7dd;border-right:1px solid #00a7dd}
 .gat{border-top:1px solid #a8bee7;background:#d8dfec}
-.gab{padding:4px 10px 4px 10px;border-bottom:1px solid #a8bee7}
+.gab{margin-bottom:4px;padding:4px 10px 4px 10px;border-bottom:1px solid #a8bee7}
 .pt{border-top:1px solid #00a7dd;background:#88c7ff}
-.pb{margin-bottom:10px;padding:8px 8px 8px 10px;border-bottom:1px solid #00a7dd}
+.pb{margin-bottom:4px;padding:8px 8px 8px 10px;border-bottom:1px solid #00a7dd}
 
 .time{float:right;margin-right:8px;padding:5px 2px 3px;font-size:12px;font-style:italic}
 .pno{margin-left:-8px;padding:5px 8px;border-right:2px solid #ffffff}
@@ -42,6 +42,11 @@ background-color:#00aaff}
 .spa{border:1px solid #e3d686;margin:8px 0px 0px 480px;}
 .spat{background:#f2eab7;float:right;padding-left:8px;padding-right:8px}
 
-.query{margin:2px;width:480px;height:20px;line-height:20px;padding:0px 4px;font-size:16px;font-family:Tahoma;border:1px solid #e3d686}
-.button{height:28px;padding:0px 16px 2px;font-weight:bold;font-size:18px;font-family:Verdana;color:#ffffff;background:#cc7700;border:1px solid #e3d686}
-.button:hover {color:#995500;background:#f2eab7;}
+.sq,.sqs{margin:4px;}
+.sq{width:432px}
+.sqs{width:128px}
+.sqi{padding:0px 2px;height:24px;font-size:16px;font-family:Tahoma;border:1px solid #a5da94}
+.button{float:right;margin-left:0;padding:2px 12px 1px;color:#ffffff;background:#50b050;font-weight:bold;font-size:16px;font-family:Verdana;border:1px solid #a5da94}
+.button:hover {color:#009f00;background:#dbf1d4;}
+
+.nav{padding:2px 8px;margin:2px;background:#d8dfec;text-align:center;}

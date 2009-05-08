@@ -9,12 +9,14 @@ import optparse
 
 from base import logger
 from utilxml import *
-from adselector import generateAdWords
+from adsgen import generateAdWords
 
 def updatePost(posts, post):
   return posts
 
-def initPost(posts, post):
+def initPost(posts):
+  for p in posts:
+    p['weight'] = 1
   return posts
 
 def main():
@@ -40,9 +42,9 @@ def main():
     output_prefix = os.path.splitext(file_path)[0]
 
   posts = extractXmlFile(file_path)
+  posts = initPost(posts)
 
   for p in posts:
-    #posts = initPost(posts, p)
     #posts = updatePost(posts, p)
     sads, pads = generateAdWords(posts)
 
