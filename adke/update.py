@@ -8,16 +8,9 @@ import sys
 import optparse
 
 from base import logger
+from extract import extractPage
 from utilxml import *
-from adsgen import generateAdWords
-
-def updatePost(posts, post):
-  return posts
-
-def initPost(posts):
-  for p in posts:
-    p['weight'] = 1
-  return posts
+from adsgen import genUpdateAds
 
 def main():
   # args and options init
@@ -35,22 +28,11 @@ def main():
   file_path = args[0]
   logger.info('Generate ads keywords for the whole page %s' % file_path)
 
-  # the default output file name
+  posts = extractPage(file_path)
+  ads = genUpdateAds(posts)
+
   if options.output:
-    output_prefix = options.output
-  else:
-    output_prefix = os.path.splitext(file_path)[0]
-
-  posts = extractXmlFile(file_path)
-  posts = initPost(posts)
-
-  for p in posts:
-    #posts = updatePost(posts, p)
-    sads, pads = generateAdWords(posts)
-
-    file_path = "%s.ads%d" % (output_prefix, p['no'])
-    outputXmlAdsFile(file_path, sads, pads) 
-
+    outputXmlAdsFile(options.output, posts, ads)
   return 0
 
 

@@ -6,16 +6,11 @@
 from base import logger
 from idf import idf
 
-def scoreTokens(tokens, weight=1, scored_tokens={}):
-  '''Help function to generate the tf-idf value for each token in tokens,
-  return the sorted tokens dictionary
-  '''
-  for token in tokens:
-    if not scored_tokens.has_key(token):
-      scored_tokens[token] = 0
-    scored_tokens[token] += idf[token]*weight
-
-  return scored_tokens
+# parameters
+mu = 0.9      # for each post, the own part weight
+lam = 0.2     # refer weight
+alpha = 1.5   # quote additional weight
+zeta = 2      # title additional weight
 
 def isAdWords(token):
   return True
@@ -42,8 +37,8 @@ def selectAdWords(scored_tokens, words_number=3, score_limit=1):
     else:
       ad_words.append(token)
       ad_words_count += 1
-      logger.debug('%(token)s(%(score)f) is selected as '
-                   '%(ad_words_count)d ad word' % locals())
+      logger.info('%(token)s(%(score)f) is selected as '
+                  '%(ad_words_count)d ad word' % locals())
 
     if ad_words_count == words_number:
       logger.debug("got enough adwords, exit")
@@ -51,58 +46,126 @@ def selectAdWords(scored_tokens, words_number=3, score_limit=1):
 
   return ad_words
 
-def generateAdWords(posts, static_num=6, post_num=3):
-  '''Generate ad words from posts
-  return static_ads, post_ads
-    the static_ads is an ads words list for banner and sidebar
-    the post_ads is a dictionary contains ads words list for each post, like:
-      {'p1' : [adsword, adsword, ...],
-       'p2' : [adsword, adsword, ...]
-      }
+def scoreTokens(tokens, weight=1, scored_tokens={}, scorer=idf):
+  '''Help function to generate the tf-idf value for each token in tokens,
+  return the sorted tokens dictionary
+  '''
+  for token in tokens:
+    if not scored_tokens.has_key(token):
+      scored_tokens[token] = 0
+    if not scorer.has_key(token):
+      scorer[token] = 0
+    scored_tokens[token] += scorer[token]*weight
+
+  return scored_tokens
+
+def mergeScoredTokens(scored_tokens1, scored_tokens2, weight=1):
+  merged = {}
+  for token, score in scored_tokens1.items():
+    if scored_tokens2.has_key(token):
+      merged[token] = score + scored_tokens2[token]*weight
+    else:
+      merged[token] = score
+  for token, score in scored_tokens2.items():
+    if not scored_tokens1.has_key(token):
+      merged[token] = score*weight
+  
+  return merged
+
+def updateScoredPosts(scored_posts, post):
+  for ref in post['refs']:
+    # ref['no'] == 0 means it refer to no post before
+    if ref['no'] != 0:
+      continue
+    rs = scored_posts[ref['no']-1]
+    if ref['tokens']:
+      # part quote
+      scored_posts[ref['no']-1] = scoreTokens(ref['tokens'], lam*alpha, rs)
+    else:
+      # refer, consier the body only
+      scored_posts[ref['no']-1] = mergeScoredTokens(rs, rs, lam)
+  return scored_posts
+
+def genAds4Post(scored_post, post, scored_posts, ads_num=3):
+  '''Generate ad words from scored_posts for a detail post'''
+
+  all_tokens = {}
+  # original weight
+  all_tokens = mergeScoredTokens(all_tokens, scored_post, mu)
+
+  # other posts' token value
+  for ref in post['refs']:
+    # ref['no'] == 0 means it refer to no post before
+    if ref['no'] != 0:
+      continue
+    if ref['tokens']:
+      # part quote
+      all_tokens = scoreTokens(ref['tokens'], alpha*(1.0-mu), all_tokens, scored_posts[ref['no']-1])
+    else:
+      # refer, consier the body only
+      all_tokens = mergeScoredTokens(all_tokens, scored_posts[ref['no']-1], (1.0-mu))
+     
+  ads = selectAdWords(all_tokens, ads_num)
+  adskeywords = " ".join(ads)
+  logger.info('got ads %s for post %d' % (adskeywords, post['no']))
+
+  return ads
+
+def genAds4Page(scored_posts, ads_num=6):
+  '''generate the ads words from already scored posts for the whole page'''
+
+  scored_tokens = {}
+  for sp in scored_posts:
+    for token, score in sp.items():
+      if not scored_tokens.has_key(token):
+        scored_tokens[token] = 0
+      scored_tokens[token] += score
+  ads = selectAdWords(scored_tokens, ads_num)
+  adskeywords = " ".join(ads)
+  logger.info('got general ads keywords as %(adskeywords)s' % locals())
+
+  return ads
+
+def genUpdateAds(posts):
+  '''
+  return ads, which is an ads list on each timestamp
+    [ads_t1, ads_t2, ...]
+    each list node is a list that contains ads words list for whole page
+  and each post:
+      [ [adsword, adsword, ...], # ads for whole page
+        [adsword, adsword, ...], # ads for post 1
+        [adsword, adsword, ...], # ads for post 2
+        ...
+      ]
   '''
 
-  # parameters
-  mu = 0.9      # for each post, the own part weight
-  beta = 2      # quote weight
-  alpha = 1.5   # refer weight
-  zeta = 2      # title weight
-  gamma = 1     # distance weight
+  ads = []
+  scored_posts = []
 
-  # generate the ads words for the whole page
-  for p in posts:
-    scored_tokens = scoreTokens(p['title_tokens'], zeta)
-    scored_tokens = scoreTokens(p['body_tokens'], scored_tokens=scored_tokens)
-    for ref in p['refs']:
-      scored_tokens = scoreTokens(ref['tokens'], scored_tokens=scored_tokens)
-  static_ads = selectAdWords(scored_tokens, static_num)
-  adskeywords = " ".join(static_ads)
-  logger.info('got static ads as %(adskeywords)s' % locals())
+  for np in posts:
+    ads_pt = []
 
-  post_ads = {}
-  for p in posts:
-    # original weight
-    scored_tokens = {}
-    scored_tokens = scoreTokens(p['title_tokens'], zeta*p['weight']*mu, scored_tokens)
-    scored_tokens = scoreTokens(p['body_tokens'], p['weight']*mu, scored_tokens)
-    # for bref in p['brefs']:
+    # update old scored posts by new post
+    scored_posts = updateScoredPosts(scored_posts, np)
+    # score new post
+    st = {}
+    st = scoreTokens(np['body_tokens'], scored_tokens=st)
+    st = scoreTokens(np['title_tokens'], weight=zeta, scored_tokens=st)
+    # add new scored post into scored posts
+    scored_posts.append(st)
 
-    # other posts' token value
-    for ref in p['refs']:
-      refp = posts[ref['id']]
-      if ref['tokens']:
-        # part quote
-        scored_tokens = scoreTokens(ref['tokens'], beta*refp['weight']*(1.0-mu))
-      else:
-        # refer, consier the body only
-        scored_tokens = scoreTokens(refp['body_tokens'], alpha*refp['weight']*(1.0-mu))
-     
-    ads = selectAdWords(scored_tokens, post_num)
-    key = 'p%d' % p['no']
-    post_ads[key] = ads
-    adskeywords = " ".join(ads)
-    logger.info('got %(key)s ads as %(adskeywords)s' % locals())
+    # gen ads for the whole page
+    ads_pt.append(genAds4Page(scored_posts))
+    # gen ads for the updated old scored posts
+    i = 0
+    for sp in scored_posts:
+      ads_pt.append(genAds4Post(sp, posts[i], scored_posts))
+      i += 1
 
-  return static_ads, post_ads
+    ads.append(ads_pt)
+
+  return ads
+  
 
 if __name__ == '__main__':
   print 'This is a help module'

@@ -15,7 +15,7 @@ def xmlIndent(dom, node, adwords, indent=' ', newl='\n'):
   for token in adwords:
     text = dom.createTextNode(newl + indent)
     node.appendChild(text)
-    keyword = dom.createElement("keyword")
+    keyword = dom.createElement("kw")
     text = dom.createTextNode(token.decode('utf-8'))
     keyword.appendChild(text)
     node.appendChild(keyword)
@@ -28,36 +28,46 @@ def xmlIndent(dom, node, adwords, indent=' ', newl='\n'):
   text = dom.createTextNode(newl + newl)
   node.parentNode.appendChild(text)
 
-def outputXmlAdsFile(file_path, sads, pads):
+def outputXmlAdsFile(file_path, posts, ads):
   '''output ads keywords in sads and pads to a xml file on file_path
   '''
 
   logger.info('write ads to xml file %(file_path)s' % locals())
-  # a new document and the root
-  doc = minidom.Document()
-  ads = doc.createElement('ads')
-  doc.appendChild(ads)
-  text = doc.createTextNode('\n')
-  ads.appendChild(text)
+  xmlstr = []
+  xmlstr.append('<?xml version="1.0" encoding="utf-8"?>')
+  xmlstr.append('<page>\n')
 
-  # sidebar part
-  sidebar_ads = doc.createElement("sidebar")
-  doc.documentElement.appendChild(sidebar_ads)
-  xmlIndent(doc, sidebar_ads, sads[:3])
+  # posts
+  xmlstr.append('<topic>\n')
+  for post in posts:
+    xmlstr.append('<post id="%d">' % post['no'])
+    xmlstr.append(' <date_time>%s</date_time>' % post['date'])
+    xmlstr.append(' <title>%s</title>' % post['title'])
+    for ref in post['refs']:
+      xmlstr.append(' <ref id="%d">%s</ref>' % (ref['no'], ref['body']))
+    xmlstr.append(' <body>%s</body>' % post['body'])
+    xmlstr.append('</post>\n')
+  xmlstr.append('</topic>\n')
 
-  # banner part
-  banner_ads = doc.createElement("banner")
-  doc.documentElement.appendChild(banner_ads)
-  xmlIndent(doc, banner_ads, sads[3:])
+  # ads
+  xmlstr.append('<ads>\n')
+  ts = 0
+  for tads in ads:
+    ts += 1
+    xmlstr.append('<tads id="%d">' % ts)
+    pno = 0
+    for pads in tads:
+      kws = ["<kw>%s</kw>" % k for k in pads]
+      padstr = "".join(kws)
+      xmlstr.append(' <ads id="%d">%s</ads>' % (pno, padstr))
+      pno += 1
+    xmlstr.append('</tads>\n')
+  xmlstr.append('</ads>\n')
 
-  for pno, pad in pads.items():
-    post_ads = doc.createElement(pno)
-    doc.documentElement.appendChild(post_ads)
-    xmlIndent(doc, post_ads, pad)
+  xmlstr.append('</page>\n')
 
-  xmlstr = doc.toxml(encoding='utf-8')
   of = file(file_path, "w")
-  of.write(xmlstr)
+  of.write("\n".join(xmlstr))
   of.close()
 
 def extractXmlFile(file_path):

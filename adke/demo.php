@@ -2,23 +2,20 @@
 header("Content-Type: text/html; charset=utf-8");
 
 if (isset($_GET['doc']))
-  $doc_prefix = $_GET['doc'];
+  $doc_file = $_GET['doc'];
 else
-  $doc_prefix = 'dospy';
+  $doc_file = 'dospy.xml';
 
 if (isset($_GET['p']))
   $cp = $_GET['p'];
 else
   $cp = 15;
 
-$doc_file = $doc_prefix.".xml";
-$ads_file = $doc_prefix.".ads$cp";
-
 $doc = new DOMDocument();
 $doc->load( $doc_file );
 
-$ads = new DOMDocument();
-$ads->load( $ads_file );
+$posts = $doc->getElementsByTagName( "topic" );
+$ads = $doc->getElementsByTagName( "tads" )->item($cp-1)->getElementsByTagName('ads');
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -36,11 +33,11 @@ $ads->load( $ads_file );
 
 <div id="hd">
 <?php
-  $banner_ads = $ads->getElementsByTagName( "banner" );
-  if ( $banner_ads->length > 0 ) {
+  $banner_ads = $ads->item(0);
+  if ( $banner_ads->hasChildNodes() > 0 ) {
     echo "<div class=\"gat\">Banner Ads</div>\n";
     echo "<div class=\"gab\">\n";
-    $keywords = $banner_ads->item(0)->getElementsByTagname( "keyword" );
+    $keywords = $banner_ads->getElementsByTagname( "kw" );
     foreach ( $keywords as $banner_ad ) {
       $keyword = $banner_ad->nodeValue;
       echo "$keyword ";
@@ -57,11 +54,11 @@ $ads->load( $ads_file );
 
 <div id="right">
 <?php
-  $sidebar_ads = $ads->getElementsByTagName( "sidebar" );
-  if ( $sidebar_ads->length > 0 ) { 
+  $sidebar_ads = $ads->item(0);
+  if ( $banner_ads->hasChildNodes() > 0 ) {
     echo "<div class=\"gat\">Sidebar Ads</div>";
     echo "<div class=\"gab\">\n";
-    $keywords = $sidebar_ads->item(0)->getElementsByTagName( "keyword" );
+    $keywords = $sidebar_ads->getElementsByTagName( "kw" );
     foreach ( $keywords as $sidebar_ad ) {
       $keyword = $sidebar_ad->nodeValue;
       echo "$keyword <br />\n";
@@ -77,7 +74,7 @@ Input the post No. you want to go and click Go!.
 <div class="sqs">
   <input type="submit" value="Go!" class="button"/>
   <input value="<?php echo $cp==15?$cp:$cp+1; ?>" name="p" size="4" class="sqi" />
-  <input type="hidden" value="<?php echo "$doc_prefix"; ?>" name="doc" />
+  <input type="hidden" value="<?php echo "$doc_file"; ?>" name="doc" />
 </div>
 </form>
 </center>
@@ -104,21 +101,23 @@ foreach( $posts as $post ) {
   echo "<a name=\"post_$post_id\"></a>\n";
   echo "<div class=\"pt\">\n";
   echo "<div class=\"time\">$date_time</div>\n";
-  echo "<span class=\"pno\"><a href=\"demo.php?doc=$doc_prefix&p=$post_id\">$post_id</a></span>\n";
+  echo "<span class=\"pno\"><a href=\"demo.php?doc=$doc_file&p=$post_id\">$post_id</a></span>\n";
   echo "$title\n";
   echo "</div>\n";
   
   echo "<div class=\"pb\">\n";
 
   $refs = $post->getElementsByTagName( "ref" );
-  $ref_no = $refs->item(0)->getAttribute( "id" );
-  if ( $ref_no != 0 ) {
-    $ref = $refs->item(0)->nodeValue;
-    if ( strlen($ref) == 0 ) {
-      echo "<div class=\"sref\"><span class=\"sreft\">Refer</span> to <a href=\"#post_$ref_no\">$ref_no#</a></div>\n";
-    } else {
-      echo "<div class=\"rt\">Quote from <a href=\"#post_$ref_no\">$ref_no#</a></div>\n";
-      echo "<div class=\"rb\">$ref</div>\n";
+  foreach ( $refs as $ref ) {
+    $ref_no = $ref->getAttribute( "id" );
+    if ( $ref_no != 0 ) {
+      $ref_body = $ref->nodeValue;
+      if ( strlen($ref_body) == 0 ) {
+        echo "<div class=\"sref\"><span class=\"sreft\">Refer</span> to <a href=\"#post_$ref_no\">$ref_no#</a></div>\n";
+      } else {
+        echo "<div class=\"rt\">Quote from <a href=\"#post_$ref_no\">$ref_no#</a></div>\n";
+        echo "<div class=\"rb\">$ref_body</div>\n";
+      }
     }
   }
 
@@ -128,10 +127,11 @@ foreach( $posts as $post ) {
   $body = str_replace("\n", "<br />\n", $body);
   echo "$body\n";
 
-  $pads = $ads->getElementsByTagName( "p$post_id" );
-  if ( $pads->length > 0 ) {
+  $pads = $ads->item( $post_id );
+  if ( $pads->hasChildNodes() ) {
     echo "<div class=\"spa\">";
     echo "<span class=\"spat\">Ads for Post $post_id</span>";
+    $pads = $pads->getElementsByTagname( "kw" );
     foreach ( $pads as $pad ) {
       $keyword = $pad->nodeValue;
       echo "$keyword ";

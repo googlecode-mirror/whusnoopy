@@ -20,6 +20,7 @@ def extractPage(file_path):
   '''Extract a dospy Web Page to posts
   return a posts list that every post is a dictionary like:
     {'no'     : %d,
+     'id'     : %d,
      'date'   : %Y-%m-%d %H:%M, # 2009-05-12 14:27
      'time'   : %f, # in seconds
      'title'  : %s,
@@ -29,7 +30,8 @@ def extractPage(file_path):
      'refs'   : [ref, ref, ...]
     }
   and in refs list, a ref is a dictionary like:
-    {'id'    : %d,
+    {'no'    : %d,
+     'id'    : %d,
      'body'  : %s,
      'tokens': [token, token, ...] # seged tokens from ref body
     }
