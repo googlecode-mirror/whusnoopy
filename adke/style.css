@@ -46,7 +46,7 @@ background-color:#00aaff}
 .sq{width:432px}
 .sqs{width:128px}
 .sqi{padding:0px 2px;height:24px;font-size:16px;font-family:Tahoma;border:1px solid #a5da94}
-.button{float:right;margin-left:0;padding:2px 12px 1px;color:#ffffff;background:#50b050;font-weight:bold;font-size:16px;font-family:Verdana;border:1px solid #a5da94}
+.button{float:right;margin-left:0;padding:0px 8px;color:#ffffff;background:#50b050;font-weight:bold;font-size:18px;font-family:Verdana;border:1px solid #a5da94}
 .button:hover {color:#009f00;background:#dbf1d4;}
 
 .nav{padding:2px 8px;margin:2px;background:#d8dfec;text-align:center;}

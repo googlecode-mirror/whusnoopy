@@ -132,7 +132,8 @@ def genUpdateAds(posts):
     [ads_t1, ads_t2, ...]
     each list node is a list that contains ads words list for whole page
   and each post:
-      [ [adsword, adsword, ...], # ads for whole page
+      [ [adsword, adsword, ...], # ads for whole page withno reinforcement
+        [adsword, adsword, ...], # ads for whole page with reinforcement
         [adsword, adsword, ...], # ads for post 1
         [adsword, adsword, ...], # ads for post 2
         ...
@@ -140,20 +141,26 @@ def genUpdateAds(posts):
   '''
 
   ads = []
+  scored_page = {}
   scored_posts = []
 
   for np in posts:
     ads_pt = []
 
-    # update old scored posts by new post
-    scored_posts = updateScoredPosts(scored_posts, np)
+    # add new post into scored page
+    scored_page = scoreTokens(np['body_tokens'], scored_tokens=scored_page)
+    scored_page = scoreTokens(np['title_tokens'], scored_tokens=scored_page)
     # score new post
     st = {}
     st = scoreTokens(np['body_tokens'], scored_tokens=st)
     st = scoreTokens(np['title_tokens'], weight=zeta, scored_tokens=st)
     # add new scored post into scored posts
     scored_posts.append(st)
+    # update old scored posts by new post
+    scored_posts = updateScoredPosts(scored_posts, np)
 
+    # gen ads for the whole page without reinforcement (only tf*idf)
+    ads_pt.append(selectAdWords(scored_page, 6))
     # gen ads for the whole page
     ads_pt.append(genAds4Page(scored_posts))
     # gen ads for the updated old scored posts

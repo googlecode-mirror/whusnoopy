@@ -16,7 +16,7 @@ from base import logger
 def detectSite(content):
   return 'utildospy'
 
-def extractPage(file_path):
+def extractPage(file_path, posts=[]):
   '''Extract a dospy Web Page to posts
   return a posts list that every post is a dictionary like:
     {'no'     : %d,
@@ -45,7 +45,6 @@ def extractPage(file_path):
 
   site = detectSite(page_content)
 
-  posts = []
   post_content, ppos = detectNextPost(page_content)
   while post_content:
     post = {}
@@ -58,7 +57,7 @@ def extractPage(file_path):
     # title and reply_id in head info
     post['title'], reply_id, pos = detectTitleAndReply(post_content, pos)
 
-    if reply_id > 0:
+    if reply_id > 0 and reply_id < post['no']:
       refs = {}
       refs['no'] = reply_id
       refs['id'] = posts[reply_id-1]['id']
@@ -68,6 +67,7 @@ def extractPage(file_path):
     post['body'], quotes, pos = detectBodyAndQuotes(post_content, pos)
 
     for quote in quotes:
+      quote['no'] = post['no']
       for p in posts:
         if p['id'] == quote['id']:
           quote['no'] = p['no']

@@ -2,20 +2,27 @@
 header("Content-Type: text/html; charset=utf-8");
 
 if (isset($_GET['doc']))
-  $doc_file = $_GET['doc'];
+  $doc = $_GET['doc'];
 else
-  $doc_file = 'dospy.xml';
+  $doc = 'dospy.xml';
+
+$doc_file = '../data/'.$doc;
 
 if (isset($_GET['p']))
   $cp = $_GET['p'];
-else
-  $cp = 15;
 
-$doc = new DOMDocument();
-$doc->load( $doc_file );
+$domdoc = new DOMDocument();
+$domdoc->load( $doc_file );
 
-$posts = $doc->getElementsByTagName( "topic" );
-$ads = $doc->getElementsByTagName( "tads" )->item($cp-1)->getElementsByTagName('ads');
+$posts = $domdoc->getElementsByTagName( "post" );
+$sp = $posts->length;
+if ($cp > $sp) {
+  $cp = $sp;
+}
+$ads = $domdoc->getElementsByTagName( "tads" )->item($cp-1);
+$banner_ads = $ads->getElementsByTagName( "banner" )->item(0);
+$sidebar_ads = $ads->getElementsByTagName( "sidebar" )->item(0);
+$pads = $ads->getElementsByTagName('pads');
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -33,7 +40,6 @@ $ads = $doc->getElementsByTagName( "tads" )->item($cp-1)->getElementsByTagName('
 
 <div id="hd">
 <?php
-  $banner_ads = $ads->item(0);
   if ( $banner_ads->hasChildNodes() > 0 ) {
     echo "<div class=\"gat\">Banner Ads</div>\n";
     echo "<div class=\"gab\">\n";
@@ -53,9 +59,24 @@ $ads = $doc->getElementsByTagName( "tads" )->item($cp-1)->getElementsByTagName('
 <div id="main" align="left">
 
 <div id="right">
+<div class="pt">Navigate</div>
+<div class="pb">
+Input the post No. and click Go!, or click the Post No. on the top-left of each post.
+</div>
+<center>
+<form method="get" name="demogo" action="demo.php">
+<div class="sqs">
+  <input type="submit" value="Go!" class="button"/>
+  <input value="<?php echo $cp==$sp?$cp:$cp+1; ?>" name="p" size="4" class="sqi" />
+  <input type="hidden" value="<?php echo "$doc"; ?>" name="doc" />
+</div>
+</form>
+<br />
+<br />
+<br />
+</center>
 <?php
-  $sidebar_ads = $ads->item(0);
-  if ( $banner_ads->hasChildNodes() > 0 ) {
+  if ( $sidebar_ads->hasChildNodes() > 0 ) {
     echo "<div class=\"gat\">Sidebar Ads</div>";
     echo "<div class=\"gab\">\n";
     $keywords = $sidebar_ads->getElementsByTagName( "kw" );
@@ -66,26 +87,11 @@ $ads = $doc->getElementsByTagName( "tads" )->item($cp-1)->getElementsByTagName('
     echo "</div>\n";
   }
 ?>
-<div class="gat">Navigate</div>
-<div class="gab">
-Input the post No. you want to go and click Go!.
-<center>
-<form method="get" name="demogo" action="demo.php">
-<div class="sqs">
-  <input type="submit" value="Go!" class="button"/>
-  <input value="<?php echo $cp==15?$cp:$cp+1; ?>" name="p" size="4" class="sqi" />
-  <input type="hidden" value="<?php echo "$doc_file"; ?>" name="doc" />
-</div>
-</form>
-</center>
-or click the Post No. on the top-left of each post.
-</div>
 </div>
 
 <div id="left">
 
 <?php
-$posts = $doc->getElementsByTagName( "post" );
 foreach( $posts as $post ) {
   $post_id = $post->getAttribute( 'id' );
 
@@ -101,7 +107,7 @@ foreach( $posts as $post ) {
   echo "<a name=\"post_$post_id\"></a>\n";
   echo "<div class=\"pt\">\n";
   echo "<div class=\"time\">$date_time</div>\n";
-  echo "<span class=\"pno\"><a href=\"demo.php?doc=$doc_file&p=$post_id\">$post_id</a></span>\n";
+  echo "<span class=\"pno\"><a href=\"demo.php?doc=$doc&p=$post_id\">$post_id</a></span>\n";
   echo "$title\n";
   echo "</div>\n";
   
@@ -127,13 +133,13 @@ foreach( $posts as $post ) {
   $body = str_replace("\n", "<br />\n", $body);
   echo "$body\n";
 
-  $pads = $ads->item( $post_id );
-  if ( $pads->hasChildNodes() ) {
+  $pad = $pads->item( $post_id-1 );
+  if ( $pad->hasChildNodes() ) {
     echo "<div class=\"spa\">";
     echo "<span class=\"spat\">Ads for Post $post_id</span>";
-    $pads = $pads->getElementsByTagname( "kw" );
-    foreach ( $pads as $pad ) {
-      $keyword = $pad->nodeValue;
+    $kws = $pad->getElementsByTagname( "kw" );
+    foreach ( $kws as $kw ) {
+      $keyword = $kw->nodeValue;
       echo "$keyword ";
     }
     echo "</div>\n";
