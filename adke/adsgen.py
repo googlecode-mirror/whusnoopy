@@ -7,10 +7,9 @@ from base import logger
 from idf import idf
 
 # parameters
-mu = 0.9      # for each post, the own part weight
-lam = 0.2     # refer weight
-alpha = 1.5   # quote additional weight
-zeta = 2      # title additional weight
+alpha = 2     # title additional weight
+beta = 0.5    # refer weight
+gamma = 0.5   # quote additional weight
 
 def isAdWords(token):
   return True
@@ -80,18 +79,17 @@ def updateScoredPosts(scored_posts, post):
     rs = scored_posts[ref['no']-1]
     if ref['tokens']:
       # part quote
-      scored_posts[ref['no']-1] = scoreTokens(ref['tokens'], lam*alpha, rs)
+      scored_posts[ref['no']-1] = scoreTokens(ref['tokens'], beta, rs)
     else:
       # refer, consier the body only
-      scored_posts[ref['no']-1] = mergeScoredTokens(rs, rs, lam)
+      scored_posts[ref['no']-1] = mergeScoredTokens(rs, rs, beta*gamma)
   return scored_posts
 
 def genAds4Post(scored_post, post, scored_posts, ads_num=3):
   '''Generate ad words from scored_posts for a detail post'''
 
-  all_tokens = {}
   # original weight
-  all_tokens = mergeScoredTokens(all_tokens, scored_post, mu)
+  all_tokens = scored_post
 
   # other posts' token value
   for ref in post['refs']:
@@ -100,10 +98,10 @@ def genAds4Post(scored_post, post, scored_posts, ads_num=3):
       continue
     if ref['tokens']:
       # part quote
-      all_tokens = scoreTokens(ref['tokens'], alpha*(1.0-mu), all_tokens, scored_posts[ref['no']-1])
+      all_tokens = scoreTokens(ref['tokens'], beta, all_tokens, scored_posts[ref['no']-1])
     else:
       # refer, consier the body only
-      all_tokens = mergeScoredTokens(all_tokens, scored_posts[ref['no']-1], (1.0-mu))
+      all_tokens = mergeScoredTokens(all_tokens, scored_posts[ref['no']-1], beta*gamma)
      
   ads = selectAdWords(all_tokens, ads_num)
   adskeywords = " ".join(ads)
@@ -153,7 +151,7 @@ def genUpdateAds(posts):
     # score new post
     st = {}
     st = scoreTokens(np['body_tokens'], scored_tokens=st)
-    st = scoreTokens(np['title_tokens'], weight=zeta, scored_tokens=st)
+    st = scoreTokens(np['title_tokens'], weight=alpha, scored_tokens=st)
     # add new scored post into scored posts
     scored_posts.append(st)
     # update old scored posts by new post

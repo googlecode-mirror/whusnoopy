@@ -3,19 +3,113 @@
 #
 # author: cswenye@gmail.com
 
+import time
+
 from base import logger
-def convertChar(content) :
+from xml.dom import minidom
+
+from pymmseg import mmseg
+mmseg.dict_load_defaults()
+
+def convertChar(content, decode=False) :
   html_tags = {
 #                '&nbsp;' : ' ',
-                '&amp;'  : '&',
                 '&lt;'   : '<',
                 '&gt;'   : '>',
+                '&amp;'  : '&',
 #                '&quot;' : '"'
               }
-  for html_tag, html_char in html_tags.items() :
-    content = content.replace(html_char, html_tag)
+  for html_tag, html_char in html_tags.items():
+    if decode:
+      content = content.replace(html_tag, html_char)
+    else:
+      content = content.replace(html_char, html_tag)
 
   return content
+
+def readXmlFile(file_path):
+  '''Extract a dospy Web Page to posts
+  return a posts list that every post is a dictionary like:
+    {'no'     : %d,
+     'id'     : %d,
+     'date'   : %Y-%m-%d %H:%M, # 2009-05-12 14:27
+     'time'   : %f, # in seconds
+     'title'  : %s,
+     'title_tokens' : [token, token, ...], # seged tokens from title
+     'body'   : %s,
+     'body_tokens'  : [token, token, ...], # seged tokens from body
+     'refs'   : [ref, ref, ...]
+    }
+  and in refs list, a ref is a dictionary like:
+    {'no'    : %d,
+     'id'    : %d,
+     'body'  : %s,
+     'tokens': [token, token, ...] # seged tokens from ref body
+    }
+  '''
+  logger.info('extract xml file %(file_path)s' % locals())
+
+  xmldoc = minidom.parse(file_path)
+  posts = []
+  post_nodes = xmldoc.getElementsByTagName('post')
+
+  for post_node in post_nodes:
+    post = {}
+    post['id'] = int(post_node.getAttribute('id'))
+    post['no'] = post['id']
+
+    date_time_node = post_node.getElementsByTagName('date_time')[0]
+    if date_time_node.firstChild:
+      post['date'] = date_time_node.firstChild.data
+      post['time'] = time.mktime(time.strptime(post['date'], '%Y-%m-%d %H:%M'))
+    else:
+      post['date'] = ""
+      post['time'] = 0
+
+    title_node = post_node.getElementsByTagName('title')[0]
+    if title_node.firstChild:
+      post['title'] = convertChar(title_node.firstChild.data, True).encode('utf-8')
+    else:
+      post['title'] = ""
+    post['title_tokens'] = [t.text for t in mmseg.Algorithm(post['title'])]
+
+    body_node = post_node.getElementsByTagName('body')[0]
+    if body_node.firstChild:
+      post['body'] = convertChar(body_node.firstChild.data, True).encode('utf-8')
+    else:
+      post['body'] = ""
+    post['body_tokens'] = [t.text for t in mmseg.Algorithm(post['body'])]
+
+    logger.debug('Got post_%d "%s" post on %f: %s' % \
+                 (post['no'], post['title'], post['time'], post['body']))
+
+    refs = []
+    for ref_node in post_node.getElementsByTagName('ref'):
+      ref = {}
+      ref['id'] = int(ref_node.getAttribute('id'))
+      ref['no'] = ref['id']
+
+      # no refer (ref['id'] == 0)
+      if not ref['id']:
+        continue
+
+      if ref_node.firstChild:
+        ref['body'] = convertChar(ref_node.firstChild.data, True).encode('utf-8')
+      else:
+        ref['body'] = ""
+      ref['tokens'] = [t.text for t in mmseg.Algorithm(ref['body'])]
+      
+      logger.debug('Got refer to post_%d: %s' % (ref['id'], ref['body']))
+      refs.append(ref)
+
+    post['refs'] = refs
+
+#    print '[POST][%d] finish' % post['id']
+
+    # Every elements extract already, append this post dictionary to posts
+    posts.append(post)
+
+  return posts
 
 def outputXmlAdsFile(file_path, posts, ads):
   '''output ads keywords in sads and pads to a xml file on file_path
@@ -64,8 +158,12 @@ def outputXmlAdsFile(file_path, posts, ads):
 
   xmlstr.append('</page>\n')
 
+  ol = []
+  for t in xmlstr:
+    ol.append(t.decode('utf-8'))
   of = file(file_path, "w")
-  of.write("\n".join(xmlstr))
+  ostr = '\n'.join(ol)
+  of.write(ostr.encode('utf-8'))
   of.close()
 
 if __name__ == '__main__' :
