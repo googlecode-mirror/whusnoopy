@@ -53,6 +53,7 @@ $pads = $ads->getElementsByTagName('pads');
 ?>
 </div>
 <div id="bar">
+  <a href="/">HOME</a>
   <a href="http://whusnoopy.vicp.net:25001/adke/">Advertising Keywords Extraction Demo</a>
 </div>
 
@@ -61,7 +62,9 @@ $pads = $ads->getElementsByTagName('pads');
 <div id="right">
 <div class="pt">Navigate</div>
 <div class="pb">
-Input the post No. and click Go!, or click the Post No. on the top-left of each post.
+Input the post No. and click Go!, or click the Post No. on the top-left of each post.<br />
+<br />
+<a href="<?php echo 'http://bbs.dospy.com/'.substr($doc, 0, $doc->length-3).'html'?>">Origin Post</a><br />
 </div>
 <center>
 <form method="get" name="demogo" action="demo.php">
