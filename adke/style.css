@@ -9,9 +9,9 @@ hr{border-top:1px solid #aaaaaa}
 #hd{margin-top:8px;margin-bottom:4px;width:720px;font-family:Verdana;}
 #bar{height:32px;line-height:32px;width:987px;
 font-size:14px;font-family:Verdana;color:#ffffff;text-align:center;font-weight:bold;
-background-color:#00aaff}
+background-color:#0077cc}
 #bar a{padding:7px 8px 7px 8px;color:#ffffff}
-#bar a:hover {background:#0077cc;color:#ffffcc;text-decoration:none}
+#bar a:hover {background:#00aaff;color:#ffffcc;text-decoration:none}
 #ft{clear:both;color:#666666;font-size:12px;font-family:Verdana;text-align:center}
 #ft a{color:#3333cc}
 

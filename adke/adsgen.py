@@ -73,8 +73,9 @@ def mergeScoredTokens(scored_tokens1, scored_tokens2, weight=1):
 
 def updateScoredPosts(scored_posts, post):
   for ref in post['refs']:
+    logger.debug("Update the post %d's score replied by post %d" % (ref['no'], post['no']))
     # ref['no'] == 0 means it refer to no post before
-    if ref['no'] != 0:
+    if ref['no'] == 0:
       continue
     rs = scored_posts[ref['no']-1]
     if ref['tokens']:
@@ -94,7 +95,7 @@ def genAds4Post(scored_post, post, scored_posts, ads_num=3):
   # other posts' token value
   for ref in post['refs']:
     # ref['no'] == 0 means it refer to no post before
-    if ref['no'] != 0:
+    if ref['no'] == 0:
       continue
     if ref['tokens']:
       # part quote
@@ -143,6 +144,7 @@ def genUpdateAds(posts):
   scored_posts = []
 
   for np in posts:
+    logger.debug('Start to process post %d' % np['no'])
     ads_pt = []
 
     # add new post into scored page
