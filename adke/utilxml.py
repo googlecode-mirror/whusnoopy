@@ -27,7 +27,7 @@ def convertChar(content, decode=False) :
 
   return content
 
-def readXmlFile(file_path):
+def readXmlFile(file_path, number=150):
   '''Extract a dospy Web Page to posts
   return a posts list that every post is a dictionary like:
     {'no'     : %d,
@@ -57,6 +57,8 @@ def readXmlFile(file_path):
     post = {}
     post['id'] = int(post_node.getAttribute('id'))
     post['no'] = post['id']
+    if post['no'] > number:
+      continue
 
     date_time_node = post_node.getElementsByTagName('date_time')[0]
     if date_time_node.firstChild:
@@ -104,11 +106,10 @@ def readXmlFile(file_path):
 
     post['refs'] = refs
 
-#    print '[POST][%d] finish' % post['id']
-
     # Every elements extract already, append this post dictionary to posts
     posts.append(post)
 
+  posts.sort(cmp=(lambda x, y: cmp(x['no'], y['no'])))
   return posts
 
 def outputXmlAdsFile(file_path, posts, ads):

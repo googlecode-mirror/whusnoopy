@@ -15,7 +15,7 @@ from utilxml import outputXmlAdsFile
 
 def main():
   # args and options init
-  parser = optparse.OptionParser(usage='%prog [options] LIST_FILE')
+  parser = optparse.OptionParser(usage='%prog [options] FILE')
   parser.add_option('-o', '--output_path', dest='output',
                     help='Output filename, or will use FILE.ads[n] defaultly')
   parser.add_option('-r', '--regen', action="store_true", dest='regen', default=False,
@@ -41,14 +41,11 @@ def main():
   if options.output:
     output_file_prefix = options.output
   else:
-    if options.regen:
-      output_file_prefix = "/home/cswenye/adke/data2/"
-    else:
-      output_file_prefix = "/home/cswenye/adke/data/"
+    output_file_prefix = "/home/cswenye/adke/data/"
 
+  count = 0
   for file_path in files:
-    print '[INFO] process %s' % file_path
-
+    count += 1
     thread = os.path.splitext(os.path.split(file_path)[1])[0]
 
     output_file_path = os.path.join(output_file_prefix, thread + '.xml')
@@ -59,8 +56,10 @@ def main():
         print "[FAULT] %s processed already, skip" % output_file_path
         continue
 
+    print '[INFO] process %s' % file_path
+
     if options.regen:
-      posts = readXmlFile(file_path)
+      posts = readXmlFile(file_path, 30)
     else:
       posts = []
       for i in range(1,11):
@@ -78,7 +77,7 @@ def main():
 
     ads = genUpdateAds(posts)
 
-    print "[INFO] gen ads finish, write into %s" % output_file_path
+    print "[INFO] {%d} gen ads finish, write into %s" % (count, output_file_path)
     outputXmlAdsFile(output_file_path, posts, ads)
 
   return 0

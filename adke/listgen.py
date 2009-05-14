@@ -34,11 +34,6 @@ def suitable(file_path, ref_only, strong_ref):
   if len(refs) < 5:
     return False
   count = 0
-  for ref in refs:
-    if int(ref.parentNode.attributes['id'].value) < 30:
-      count += 1
-  if count < 5:
-    return False
 
   return True
 
@@ -76,7 +71,7 @@ def main():
   parser.add_option('-l', '--output_list', dest='list',
                     help='Output list filename, or will use /home/cswenye/snoopy/adke/xmllist defaultly')
   parser.add_option('-o', '--output_path', dest='output',
-                    help='Output filename, or will use /home/cswenye/adke/demo/list.html defaultly')
+                    help='Output filename, or will use /home/cswenye/snoopy/adke/web/list.html defaultly')
   parser.add_option('-r', '--ref_only', action="store_true", dest='ref_only', default=False,
                     help='List pages only have refences or all pages')
   parser.add_option('-s', '--strong_ref', action="store_true", dest='strong_ref', default=False,
@@ -99,7 +94,7 @@ def main():
   if options.output:
     output_file = os.path.abspath(options.output)
   else:
-    output_file = "/home/cswenye/adke/demo/list.html"
+    output_file = "/home/cswenye/snoopy/adke/web/list.html"
 
   if options.list:
     list_file = os.path.abspath(options.list)

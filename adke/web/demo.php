@@ -6,7 +6,7 @@ if (isset($_GET['doc']))
 else
   $doc = 'dospy.xml';
 
-$doc_file = '../data/'.$doc;
+$doc_file = '/home/cswenye/adke/data/'.$doc;
 
 if (isset($_GET['p']))
   $cp = $_GET['p'];
