@@ -1,19 +1,17 @@
 <?php
 header("Content-Type: text/html; charset=utf-8");
 
-if (isset($_GET['doc']))
-  $doc = $_GET['doc'];
-else
-  $doc = 'dospy.xml';
-
-$doc_file = '/home/cswenye/adke/data/'.$doc;
+$doc_file = '/tmp/adke.xml';
 
 if (isset($_GET['p']))
   $cp = $_GET['p'];
+else
+  $cp = 0;
 
 $domdoc = new DOMDocument();
 $domdoc->load( $doc_file );
 
+$origin_page = $domdoc->getElementsByTagName( "origin_page" )->item(0)->nodeValue;
 $posts = $domdoc->getElementsByTagName( "post" );
 $sp = $posts->length;
 if ($cp > $sp) {
@@ -24,21 +22,28 @@ $banner_ads = $ads->getElementsByTagName( "banner" )->item(0);
 $sidebar_ads = $ads->getElementsByTagName( "sidebar" )->item(0);
 $pads = $ads->getElementsByTagName('pads');
 ?>
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-
+<html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Ads Keywords Extraction Demo</title>
-<meta name="Description" content="Ads Keywords Extraction Demo" />
 <link href="style.css" rel="stylesheet" type="text/css" />
 </head>
 
 <body>
-<center>
 
-<div id="hd">
+<div id="right">
+
+<div class="pt">Navigate</div>
+<div class="pb">
+<center>
+<a href="<?php echo $origin_page; ?>" target="_blank">Origin web page</a>.<br />
+<form method="get" name="demogo" action="demo.php">
+<div class="sq" style="width:108px">
+  <input type="submit" value="Go!" class="button"/>
+  <input value="<?php echo $cp==$sp?$cp:$cp+1; ?>" name="p" size="4" class="sqi" />
+</div>
+</center>
+</form>
+</div>
+
 <?php
   if ( $banner_ads->hasChildNodes() > 0 ) {
     echo "<div class=\"gat\">Banner Ads</div>\n";
@@ -46,39 +51,12 @@ $pads = $ads->getElementsByTagName('pads');
     $keywords = $banner_ads->getElementsByTagname( "kw" );
     foreach ( $keywords as $banner_ad ) {
       $keyword = $banner_ad->nodeValue;
-      echo "$keyword ";
+      echo "$keyword <br />";
     }
+    echo "<br /><i>These words are select by traditional tf*idf method.</i>";
     echo "</div>\n";
   }
-?>
-</div>
-<div id="bar">
-  <a href="/">HOME</a>
-  <a href="http://whusnoopy.vicp.net:25001/adke/">Advertising Keywords Extraction Demo</a>
-</div>
 
-<div id="main" align="left">
-
-<div id="right">
-<div class="pt">Navigate</div>
-<div class="pb">
-Input the post No. and click Go!, or click the Post No. on the top-left of each post.<br />
-<br />
-<a href="<?php echo 'http://bbs.dospy.com/'.substr($doc, 0, $doc->length-3).'html'?>">Origin Post</a><br />
-</div>
-<center>
-<form method="get" name="demogo" action="demo.php">
-<div class="sqs">
-  <input type="submit" value="Go!" class="button"/>
-  <input value="<?php echo $cp==$sp?$cp:$cp+1; ?>" name="p" size="4" class="sqi" />
-  <input type="hidden" value="<?php echo "$doc"; ?>" name="doc" />
-</div>
-</form>
-<br />
-<br />
-<br />
-</center>
-<?php
   if ( $sidebar_ads->hasChildNodes() > 0 ) {
     echo "<div class=\"gat\">Sidebar Ads</div>";
     echo "<div class=\"gab\">\n";
@@ -87,6 +65,7 @@ Input the post No. and click Go!, or click the Post No. on the top-left of each 
       $keyword = $sidebar_ad->nodeValue;
       echo "$keyword <br />\n";
     }
+    echo "<br /><i>These words are select by dynamic global method.</i>";
     echo "</div>\n";
   }
 ?>
@@ -110,7 +89,7 @@ foreach( $posts as $post ) {
   echo "<a name=\"post_$post_id\"></a>\n";
   echo "<div class=\"pt\">\n";
   echo "<div class=\"time\">$date_time</div>\n";
-  echo "<span class=\"pno\"><a href=\"demo.php?doc=$doc&p=$post_id\">$post_id</a></span>\n";
+  echo "<span class=\"pno\"><a href=\"demo.php?p=$post_id\">$post_id</a></span>\n";
   echo "$title\n";
   echo "</div>\n";
   
@@ -153,14 +132,6 @@ foreach( $posts as $post ) {
 ?> 
 
 </div>
-</div>
 
-<div id="ft">
-  <hr width=979 size=0 />
-  Copyright &copy; 2009 Wen YE, Department of Computing, The Hong Kong Polytechnic University. All rights reserved.<br />
-  Please <a href="mailto:cswenye@comp.polyu.edu.hk" >contact me</a> if you have any suggestion.<br /><br />
-</div>
-
-</center>
 </body>
 </html>

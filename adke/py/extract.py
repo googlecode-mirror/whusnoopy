@@ -62,6 +62,7 @@ def extractPage(file_path, posts=[]):
       refs['no'] = reply_id
       refs['id'] = posts[reply_id-1]['id']
       refs['body'] = ""
+      refs['tokens'] = []
       post['refs'].append(refs)
 
     post['body'], quotes, pos = detectBodyAndQuotes(post_content, pos)

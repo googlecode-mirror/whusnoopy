@@ -47,7 +47,7 @@ def main():
   options, args = parser.parse_args()
   words = args[:]
 
-  idft = IDFInfo('/home/cswenye/snoopy/data/sogou_utf8.dic')
+  idft = IDFInfo('/home/cswenye/snoopy/adke/data/sogou_utf8.dic')
 
   if words:
     print '>>>>>>>>>>>>>>>>>>'
@@ -67,4 +67,4 @@ def main():
 if __name__ == '__main__':
   sys.exit(main())
 else:
-  idf = IDFInfo('/home/cswenye/snoopy/data/sogou_utf8.dic')
+  idf = IDFInfo('/home/cswenye/snoopy/adke/data/sogou_utf8.dic')

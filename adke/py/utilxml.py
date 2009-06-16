@@ -112,7 +112,7 @@ def readXmlFile(file_path, number=150):
   posts.sort(cmp=(lambda x, y: cmp(x['no'], y['no'])))
   return posts
 
-def outputXmlAdsFile(file_path, posts, ads):
+def outputXmlAdsFile(file_path, url, posts, ads):
   '''output ads keywords in sads and pads to a xml file on file_path
   '''
 
@@ -120,6 +120,9 @@ def outputXmlAdsFile(file_path, posts, ads):
   xmlstr = []
   xmlstr.append('<?xml version="1.0" encoding="utf-8"?>')
   xmlstr.append('<page>\n')
+
+  # origin_page
+  xmlstr.append('<origin_page>%s</origin_page>\n' % url)
 
   # posts
   xmlstr.append('<topic>\n')
