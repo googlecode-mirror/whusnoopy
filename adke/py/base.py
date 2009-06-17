@@ -15,15 +15,16 @@ def LOGGER(filename='', level='DEBUG'):
   formatter = logging.Formatter('%(asctime)s [%(levelname)s]%(filename)s:'
                                 '%(lineno)d: %(message)s', '%m-%d,%H:%M:%S')
 
-# Console Logger
+  # Console Logger
   ch = logging.StreamHandler()
   ch.setLevel(logging.ERROR)
   ch.setFormatter(formatter)
   log.addHandler(ch)
 
+  '''
   log_file_suffix = time.strftime('%Y%m%d%H%M%S') + ".log"
 
-# If log to file
+  # If log to file
   if len(filename) == 0 :
     filename = "/home/cswenye/log/adke." + log_file_suffix
   fh = logging.FileHandler(filename)
@@ -36,6 +37,7 @@ def LOGGER(filename='', level='DEBUG'):
   dfh.setLevel(logging.DEBUG)
   dfh.setFormatter(formatter)
   log.addHandler(dfh)
+  '''
 
   return log
 

@@ -16,30 +16,33 @@
 </div>
 <div id="bar">
   <a href="/">HOME</a>
-  <a href="http://whusnoopy.vicp.net:25001/adke/adke.php">Advertising Keywords Extraction Demo</a>
+  <a href="/adke/adke.php">Advertising Keywords Extraction Demo</a>
 </div>
 
-<div id="main" align="left">
+<div id="main">
 
-<center>
 <div class="pb">
-Input an url you want to see, or view the sample <a href="http://whusnoopy.vicp.net:25001/adke/adke.php?url=http://whusnoopy.vicp.net:25001/adke/thread-3376942-1-1.html">dospy</a><br /> 
-<form method="post" name="demogo" action="">
- <div class="sq" style="width:640px">
+Input an url you want to see, or view the sample <a href="/adke/adke.php?url=http://whusnoopy.vicp.net:25001/adke/thread-4005336-1-1.html">dospy</a><br /> 
+<form method="get" name="demogo" action="">
+ <div class="sq" style="width:610px">
   <input type="submit" value="Go!" class="button"/>
   <input value="" title="URL" size="88" name="url" maxlength="256" class="sqi" />
  </div>
 </form>
 </div>
-</center>
 
-<hr size="0" />
 <?php
-  if (!empty($_POST)) {
-    $url = $_POST["url"];
-    $command = "python /home/cswenye/snoopy/adke/py/test.py ".$url;
+  if (isset($_GET["url"]))
+    $url = $_GET["url"];
+  else
+    $url = "";
+  if (strlen($url) > 0) {
+    $command = "python /home/cswenye/snoopy/adke/py/process.py ".$url;
     system($command);
-    echo '<iframe width="100%" height="640" src="demo.php?p=1" frameborder="0"></iframe>';
+?>
+<hr size="0" />
+<iframe name="demoframe" width="100%" onload="this.height=demoframe.document.body.scrollHeight" frameborder="0" src="demo.php?p=1"></iframe>
+<?php
   }
 ?>
 </div>

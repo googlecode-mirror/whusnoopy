@@ -34,7 +34,7 @@ $pads = $ads->getElementsByTagName('pads');
 <div class="pt">Navigate</div>
 <div class="pb">
 <center>
-<a href="<?php echo $origin_page; ?>" target="_blank">Origin web page</a>.<br />
+<?php echo $sp; ?> posts total, <a href="<?php echo $origin_page; ?>" target="_blank">click here</a> to view origin page.<br />
 <form method="get" name="demogo" action="demo.php">
 <div class="sq" style="width:108px">
   <input type="submit" value="Go!" class="button"/>
