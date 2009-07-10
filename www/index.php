@@ -15,6 +15,11 @@ My <a href="codestyle.html">Code Style</a><br />
   <div id="left">
  <div style="width:100%">
 
+<div class="pt">[Funny] 气泡熊</div>
+<div class="pb">
+<iframe scrolling="no" marginheight="0" marginwidth="0" frameborder="0" style="width:240px;height:66px;margin:3px;padding:0;border:1px solid #dde5e9;background-color:#ffffff;" src="http://cid-7aa8c306ee434125.skydrive.live.com/embedrowdetail.aspx/.Public/%e6%b0%94%e6%b3%a1%e7%86%8a.eif"></iframe>
+</div>
+
 <div class="pt">[Demo] AdKE Demo is running now</div>
 <div class="pb">
 &nbsp;&nbsp;Visit <a href="/adke/adke.php">Advertising Keywords Extraction Demo</a> for detail<br />
