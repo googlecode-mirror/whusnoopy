@@ -1,10 +1,9 @@
 default : all
 
-all : .base .dospy
+all : .base
 
 clean :
 	@make -C base clean
-	@make -C dospy clean
 	@rm -rf bin
 
 install : all
@@ -14,5 +13,3 @@ install : all
 .base :
 	make -C base
 
-.dospy : 
-	make -C dospy

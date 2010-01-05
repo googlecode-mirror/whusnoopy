@@ -6,6 +6,7 @@
 #include <errno.h>
 #include <stdarg.h>
 #include <sys/stat.h>
+#include <stdio.h>
 
 #include "base/logging.h"
 #include "base/util.h"

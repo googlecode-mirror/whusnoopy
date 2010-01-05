@@ -2,6 +2,8 @@
 // Author: yewen@mail.whu.edu.cn (Wen, YE)
 
 #include <iostream>
+#include <stdlib.h>
+#include <string.h>
 
 #include "base/flags.h"
 

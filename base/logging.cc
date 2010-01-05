@@ -4,6 +4,8 @@
 #include <errno.h>
 #include <syslog.h>
 #include <sys/stat.h>
+#include <stdio.h>
+#include <string.h>
 
 #include "base/flags.h"
 #include "base/util.h"
