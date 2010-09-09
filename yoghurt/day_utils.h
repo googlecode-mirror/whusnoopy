@@ -30,7 +30,7 @@ enum MONTH {
 // days in each month
 const int month_days[13] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
-// ÈòÄê·µ»Ø 1 £¬²»ÊÇÈòÄê·µ»Ø 0 
+// é—°å¹´è¿”å› 1 ï¼Œä¸æ˜¯é—°å¹´è¿”å› 0 
 int is_even_year(int year) {
     if (year % 4 != 0) {
         return 0;
@@ -41,7 +41,7 @@ int is_even_year(int year) {
     return 1;
 }
 
-// ¼ÆËã date1 ºÍ date2 Ö®¼äµÄÌìÊı 
+// è®¡ç®— date1 å’Œ date2 ä¹‹é—´çš„å¤©æ•° 
 int calc_act(date date1, date date2) {
     int days = 0;
 
@@ -94,7 +94,7 @@ int calc_act(date date1, date date2) {
     return days;
 }
 
-// ±È½ÏÁ½¸öÈÕÆÚµÄ´óĞ¡ 
+// æ¯”è¾ƒä¸¤ä¸ªæ—¥æœŸçš„å¤§å° 
 // return -1 if date1 is early than date2
 // return 1 if date1 is later than date2
 // return 0 if date1 is the same day of date2
@@ -120,10 +120,10 @@ int cmp_date(date date1, date date2) {
     return 0;
 }
 
-// ÈÕÆÚ¾À´í, ¿´ÊÇ·ñÓĞ³¬¹ı×î´óÔÂ·İ»òÕßµ±ÔÂ×î´óÌìÊıµÄ
-// return 0: ²»ÓÃ¾À´í
-// return 1: ÔÂ·İ×î´ó³¬³ö, ¾À´íÎªµ±Äê×îºóÒ»Ìì
-// return 2: ÌìÊı×î´ó³¬³ö, ¾À´íÎªµ±ÔÂ×îºóÒ»Ìì
+// æ—¥æœŸçº é”™, çœ‹æ˜¯å¦æœ‰è¶…è¿‡æœ€å¤§æœˆä»½æˆ–è€…å½“æœˆæœ€å¤§å¤©æ•°çš„
+// return 0: ä¸ç”¨çº é”™
+// return 1: æœˆä»½æœ€å¤§è¶…å‡º, çº é”™ä¸ºå½“å¹´æœ€åä¸€å¤©
+// return 2: å¤©æ•°æœ€å¤§è¶…å‡º, çº é”™ä¸ºå½“æœˆæœ€åä¸€å¤©
 int correct_date(date &org_date) {
     if (org_date.month > LAST_MONTH) {
         org_date.month = LAST_MONTH;
@@ -137,7 +137,7 @@ int correct_date(date &org_date) {
             if (org_date.day > tmp_days) {
                 org_date.day = tmp_days;
             } else {
-                // Ã»´í
+                // æ²¡é”™
                 return 0;
             }
         } else {
@@ -149,7 +149,7 @@ int correct_date(date &org_date) {
     return 0;
 }
 
-// ·µ»ØÇ°Ò»ÄêµÄÈÕÆÚ
+// è¿”å›å‰ä¸€å¹´çš„æ—¥æœŸ
 date prev_year_date(date cur_date) {
     date new_date = cur_date;
     new_date.year--;
@@ -158,7 +158,7 @@ date prev_year_date(date cur_date) {
     return new_date;
 }
 
-// ·µ»ØºóÒ»ÄêµÄÈÕÆÚ
+// è¿”å›åä¸€å¹´çš„æ—¥æœŸ
 date next_year_date(date cur_date) {
     date new_date = cur_date;
     new_date.year++;

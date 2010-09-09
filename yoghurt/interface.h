@@ -3,11 +3,11 @@
 
 const double EPS = 1e-9;
 
-// TODO: ��ʵ���ǲ�̫���������涼��ɶ��˼
+// TODO: 其实还是不太明白这里面都是啥意思
 enum WAY_OF_DAY_COUNT {
     GERMAN = 1,
     SPECIAL_GERMAN = 2,
-    // TODO: ����/���������������ֿ�ͷ
+    // TODO: 变量/常量名不能用数字开头
     // 30U_360 = 3,
     U30_360 = 3,
     ACT_ACT = 4,
@@ -21,15 +21,15 @@ struct bond_content
     double coupon;
     double maturity;
 
-    // �������㷽��, �� WAY_OF_DAY_COUNT
+    // 天数计算方法, 见 WAY_OF_DAY_COUNT
     int way_of_day_count;
 
-    // TODO: ����ɶ? �� get_value_date ��������ֵ, �ֱ�ָ��ʲô?
+    // TODO: 这是啥? 看 get_value_date 里有两个值, 分别指代什么?
     int frequence;
 
-    //   1: һ����������ծȯ
-    //   2: һ���Ի�����Ϣծȯ����Ϣծȯ
-    //   3: �̶����ʸ�Ϣծȯ,
+    //   1: 一年以内贴现债券
+    //   2: 一次性换本付息债券或零息债券
+    //   3: 固定利率付息债券,
     int type;
 };
 
