@@ -2,13 +2,7 @@
 <title>yewen's Homepage</title>
 <meta name="Description" content="Services of yewen" />
 <?php include("bar.php") ?>
-
-  <div id="right"> 
-<div class="pt">Quick Link</div>
-<div class="pb">
-A history snapshot of my <a href="codestyle.html">Code Style</a><br />
-</div>
-  </div>
+<?php include("right.php") ?>
  
   <div id="left">
  <div style="width:100%">
