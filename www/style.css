@@ -27,17 +27,5 @@ background-color:#0077cc}
 
 .time{float:right;margin-right:8px;padding:5px 2px 3px;font-size:12px;font-style:italic}
 .pno{margin-left:-8px;padding:3px 8px;border-right:2px solid #ffffff}
-
-.rt,.sref{padding-left:8px;height:20px;line-height:20px;font-size:12px;font-weight:bold}
-.rt,.rb{margin-right:48px;border-left:1px solid #a5da94;border-right:1px solid #a5da94}
-.rt{border-top:1px solid #a5da94;background:#dbf1d4;}
-.rb{line-height:20px;font-size:12px;margin-bottom:8px;padding:8px;font-style:italic;border-bottom:1px solid #a5da94}
-
-.sref{margin:0px 640px 4px 0px;border:1px solid #a5da94}
-.sreft{background:#dbf1d4;float:right;padding-left:8px;padding-right:8px}
-
-.sq{margin:4px;height:24px;padding:0px;border:1px solid #a5da94;font-size:16px;text-align:center;}
-.sqi{margin:1px;height:20px;font-size:14px;font-family:Tahoma;border:0}
-.button{float:right;margin:0;padding:2px 8px;color:#ffffff;background:#50b050;font-weight:bold;font-size:16px;font-family:Verdana;border:0}
-.button:hover {color:#009f00;background:#dbf1d4;}
+.ntc{border:#ffb7d7 1px solid;padding:5px 5px 5px 5px;color:#ff4757;background-color:#ffe7f3}
 

@@ -1,14 +1,17 @@
-<?php include("header.php") ?>
+<?php include("../header.php") ?>
 <title>Win7/Office2010 安装使用教程</title>
 <meta name="Description" content="如何安装激活 Windows 7 和 Office 2010" />
-<?php include("bar.php") ?>
-<?php include("right.php") ?>
+<?php include("../bar.php") ?>
+<?php include("../right.php") ?>
 
   <div id="left">
  <div style="width:100%">
 
 <div class="pt">本页面说明</div>
 <div class="pb">
+
+<div class="ntc">请注意, 本页面尚未完全完工</div>
+
 <pre>
 本盘为 Win7 Pro x86 chs 安装盘
 Office_2010_Pro_x86_chs 目录下提供了 Office 2010 Pro 和其激活工具
@@ -112,5 +115,5 @@ Win7 下, 在 Office_2010_Pro_x86_chs 目录里面的 setup.exe 上点右键, �
  </div> 
   </div>
 
-<?php include("footer.php") ?>
+<?php include("../footer.php") ?>
 
