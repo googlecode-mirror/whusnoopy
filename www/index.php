@@ -2,6 +2,7 @@
 <title>yewen's Homepage</title>
 <meta name="Description" content="Services of yewen" />
 <?php include("bar.php") ?>
+
 <?php include("right.php") ?>
  
   <div id="left">
@@ -10,6 +11,11 @@
 <div class="pt">[INFO] 本站说明</div>
 <div class="pb">
 本站为 FCR (Rank) 组内临时服务器, ftp 可以通过 <a href="ftp://yewen.us" target="_blank">ftp://yewen.us</a> 或 <a href="http://yewen.us/ftp/" target="_blank">http://yewen.us/ftp/</a> 访问
+</div>
+
+<div class="pt">[BUZZ] 界面风格扩展为适应 1280px 宽度<span class="time">2010-11-19 20:07</span></div>
+<div class="pb">
+考虑到现在公司内最低的分辨率大多都是 X201i 的 1280*800, 所以扩展本站适应宽度为 1280px.
 </div>
 
 <div class="pt">[WORK] 已更新 SecureCRT 使用教程<span class="time">2010-11-10</span></div>

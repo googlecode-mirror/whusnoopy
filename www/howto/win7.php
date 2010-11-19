@@ -7,21 +7,20 @@
   <div id="left">
  <div style="width:100%">
 
-<div class="pt">本页面说明</div>
+<div class="pt"><span class="pno">I</span> Win 7 安装使用简要说明<span class="time">2010-11-19 19:18</span></div>
 <div class="pb">
 
 <div class="ntc">请注意, 本页面尚未完全完工</div>
 
 <pre>
-本盘为 Win7 Pro x86 chs 安装盘
-Office_2010_Pro_x86_chs 目录下提供了 Office 2010 Pro 和其激活工具
-Baidu_Internal 目录下提供了百度内部的杀毒软件和准入系统 (非百度内无需使用)
-X201i_Drivers 目录下提供了百度版 X201i 笔记本电脑的基本驱动和驱动下载工具
-Software 下提供了其他一些常用软件
+本说明基于 Win7 Pro x86 chs, 需要的文件可以在 <a href="http://yewen.us/ftp/Win7_rtm_with_loader/">ftp 的 Win7 目录</a>下找到.
+安装百度内部准入需要的<a href="http://yewen.us/ftp/Software/Norton_32_jiaohu.exe">杀毒软件</a>和<a href="http://yewen.us/ftp/Software/Baidu_BNAC_Setup.exe">准入系统</a> (非百度内无需使用)
+安装 X201i 的<a href="http://yewen.us/ftp/Software/X201i_Drivers/Ethernet%5b6irf24ww_732%5d.exe">网卡驱动</a>后, 用 <a href="http://yewen.us/ftp/Software/X201i_Drivers/systemupdate40-2009-10-19.exe">System Update</a> 自动下载所有驱动
+<a href="http://yewen.us/ftp/Software/">Software</a> 下提供了其他一些常用软件, <a href="http://yewen.us/ftp/Office2010_rtm_zh-cn_with_kms/">ftp 的 office 目录</a> 下提供了 Office 2010 Pro 和其激活工具
 </pre>
 </div>
 
-<div class="pt"> I. Windows 7 安装, 激活及使用技巧</div>
+<div class="pt"><span class="pno">II</span> Windows 7 安装, 激活及使用技巧</div>
 <div class="pb">
 <pre>
 1. 安装
@@ -76,7 +75,7 @@ d. 在任务栏上按住图标向上推可以和右键一样调出 JumpList, 向
 </pre>
 </div>
 
-<div class="pt">II. Office 2010 安装教程</div>
+<div class="pt"><span class="pno">III</span> Office 2010 安装教程</div>
 <div class="pb">
 <pre>
 Win7 下, 在 Office_2010_Pro_x86_chs 目录里面的 setup.exe 上点右键, 选 "使用管理员模式运行"
