@@ -7,6 +7,7 @@ a{color:#0000CC;text-decoration:none}
 a:hover {color:#cc0000;text-decoration:underline}
 hr{border-top:1px solid #aaaaaa}
 ul{padding-left:16px}
+pre{margin:0;padding:0}
 
 #hd{margin-top:8px;margin-bottom:4px;width:1240px;font-family:Verdana;}
 #bar{height:32px;line-height:32px;width:1240px;
@@ -30,4 +31,5 @@ background-color:#0077cc}
 .time{float:right;margin-right:8px;padding:5px 2px 3px;font-size:12px;font-style:italic}
 .pno{margin-left:-8px;padding:3px 8px;border-right:1px solid #ffffff}
 .ntc{border:#ffb7d7 1px solid;padding:5px 5px 5px 5px;color:#ff4757;background-color:#ffe7f3}
+.code{padding:2px 5px 2px 5px;margin:5px 30px -8px 10px;background-color:#f7ffd7;border:1px solid #aac747;color:#070;font-family:Courier New;font-size:14px}
 
