@@ -11,8 +11,9 @@
 <div class="pt">Quick Link</div>
 <div class="pb">
 <ul>
-<li>A history snapshot of my <a href="/personal/codestyle.html">Code Style</a><br />
-<li>My <a href="/personal/blog.html">blog</a>
+<li>history <a href="/personal/codestyle.html">Code Style</a>
+<li>yewen's <a href="/personal/blog.html">blog</a>
+<li><a href="http://www.google.com/chrome/eula.html?extra=devchannel&hl=zh-CN">Chrome Dev 在线安装</a>
 <ul>
 </div>
 
