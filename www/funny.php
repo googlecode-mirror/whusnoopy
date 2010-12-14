@@ -7,6 +7,13 @@
   <div id="left">
  <div style="width:100%">
 
+<div class="pt">[LOGO] FCR-RANK Logo</div>
+<div class="pb">
+240px*240px 白色背景: <br />
+<img src="img/rank_v4_white.png"> <br />
+透明背景大 png 格式: <a href="img/rank_v4.png">rank_v4.png</a>
+</div>
+
 <div class="pt">[Funny] ThinkPad 壁纸/登陆画面 for Windows 7</div>
 <div class="pb">
 下载地址: <a href="http://yewen.us/ftp/TempSpace/think_win7.zip" target="_blank">http://yewen.us/ftp/TempSpace/think_win7.zip</a><br />
