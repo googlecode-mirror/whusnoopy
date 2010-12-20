@@ -7,6 +7,18 @@
   <div id="left">
  <div style="width:100%">
 
+<a name="auth"></a>
+<div class="pt">测试机信任关系建立</div>
+<div class="pb">
+<pre>先在需要加入信任关系列表的机器上运行如下命令
+<div class="code">ssh-keygen -b 1024 -t rsa</div>
+可以生成自己的公钥在
+<div class="code">~/.ssh/id_rsa.pub</div>
+内, 将此文件的内容附加到每一台需要和此机器建立信任关系的如下文件末尾即可
+<div class="code">~/.ssh/authorized_keys</div>
+推荐的方法是先在每台机器上生成自己的公钥, 然后将这些公约合并成一个文件, 再将这个合并的文件拷贝至每台机器的 ~/.ssh/authorized_keys 即可</pre>
+</div>
+
 <a name="vimrc"></a>
 <div class="pt">Vim 配置脚本 .vimrc</div>
 <div class="pb">
@@ -32,16 +44,15 @@ set statusline=%F%m%r%h%w\ [FORMAT=%{&ff}]\ [TYPE=%Y]\ [POS=%04l,%04v][%p%%]\ [L
 set laststatus=2 " 一直显示状态栏
 
 " 插入模式切换
-map <F9> :set paste!<BAr>set paste?<CR>
+map &lt;F9&gt; :set paste!&lt;BAr&gt;set paste?&lt;CR&gt;
 
 " 多 Tab 时翻页
-map <silent> <F11> :tabprevious<CR>
-imap <silent> <F11> <Esc>:tabprevious<CR>gi
+map &lt;silent&gt; &lt;F11&gt; :tabprevious&lt;CR&gt;
+imap &lt;silent&gt; &lt;F11&gt; &lt;Esc&gt;:tabprevious&lt;CR&gt;gi
 
-map <silent> <F12> :tabnext<CR>
-imap <silent> <F12> <Esc>:tabnext<CR>gi
-</div>
-</pre>
+map &lt;silent&gt; &lt;F12&gt; :tabnext&lt;CR&gt;
+imap &lt;silent&gt; &lt;F12&gt; &lt;Esc&gt;:tabnext&lt;CR&gt;gi
+</div></pre>
 </div>
 
 <div class="pt">SecureCRT 图文教学</div>

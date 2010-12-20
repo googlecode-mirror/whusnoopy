@@ -31,8 +31,7 @@ bash 脚本也可以拷贝同一台机器上的 .bashrc, 同时强力推荐该�
 scp work@ai-fcr-test06.ai01:~/.bashrc ~/
 scp work@ai-fcr-test06.ai01:~/.toprc ~/
 scp work@ai-fcr-test06.ai01:~/.screenrc ~/
-scp work@ai-fcr-test06.ai01:~/.vimrc ~/</div>
-<pre>
+scp work@ai-fcr-test06.ai01:~/.vimrc ~/</div><pre>
 </div>
 
 <div class="pt">[BUZZ] 界面风格扩展为适应 1280px 宽度<span class="time">2010-11-19 20:07</span></div>

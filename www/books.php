@@ -19,7 +19,6 @@ The whole <a href="/ftp/Books/Python/"> ftp_directory </a> of python ebooks.
 <li><a href="/ftp/Books/Python/python-3.0.1-docs-html.zip"> python-3.0.1-docs-html.zip</a><br />&nbsp;&nbsp; Python 3.0.1 官方手册 </li> 
 </ul>
 </div>
-<br />
 </div>
 
 <a name="novel"></a>
@@ -35,9 +34,7 @@ The whole <a href="/ftp/TempSpace/books/"> ftp_directory </a> of novel ebooks.
 <li><a href="/ftp/TempSpace/books/%e7%8b%ac%e5%94%b1%e5%9b%a2-%e7%ac%ac%e4%b8%80%e8%be%91.pdf"> 独唱团-第一辑.pdf</a><br />&nbsp;&nbsp; 韩寒主编的原创杂志 </li> 
 <li><a href="/ftp/TempSpace/books/%e9%93%b6%e6%b2%b3%e8%8b%b1%e9%9b%84%e4%bc%a0%e8%af%b4.zip"> 银河英雄传说.zip</a><br />&nbsp;&nbsp; 银英, 不解释 </li> 
 </ul> 
-
 </div>
-<br />
 </div>
 
  </div> 

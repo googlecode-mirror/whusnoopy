@@ -7,6 +7,11 @@
   <div id="left">
  <div style="width:100%">
 
+<div class="pt">[Funny] 百度知道明信片壁纸</div>
+<div class="pb">
+百度知道明信片壁纸, <a href="http://yewen.us/ftp/TempSpace/zhidao_post.zip">点此下载</a>
+</div>
+
 <div class="pt">[LOGO] FCR-RANK Logo</div>
 <div class="pb">
 240px*240px 白色背景: <br />
