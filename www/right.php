@@ -11,8 +11,8 @@
 <div class="pt">Quick Link</div>
 <div class="pb">
 <ul>
-<li>history <a href="/personal/codestyle.html">Code Style</a>
-<li>yewen's <a href="/personal/blog.html">blog</a>
+<li>history <a href="<?php echo $rootdir?>/personal/codestyle.html">Code Style</a>
+<li>yewen's <a href="<?php echo $rootdir?>/personal/blog.html">blog</a>
 <li><a href="http://www.google.com/chrome/eula.html?extra=devchannel&hl=zh-CN">Chrome Dev 在线安装</a>
 <ul>
 </div>
