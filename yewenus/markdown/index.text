@@ -1,0 +1,40 @@
+# 主页
+
+## 快速链接
+
+### 常用工具
+
+### 技术参考
+
+* <a href="http://www.ibm.com/developerworks/cn/linux/l-cn-shell-debug/" target="_blank">Shell 脚本调试技术</a> <br />
+* <a href="http://www.ibm.com/developerworks/cn/linux/l-vimdiff/" target="_blank">Vimdiff 使用技巧</a> <br /> 
+* <a href="http://www.cnblogs.com/coderzh/archive/2009/04/06/1426755.html" target="_blank">玩转 GTest 单元测试框架系列</a> <br />
+
+### 快速导航
+
+* <a href="http://www.google.com/chrome/eula.html?extra=devchannel&hl=zh-CN" target="_blank">在线安装 Chrome Dev </a>
+
+## 站点信息
+
+本站为 yewen.us 私人空间, 笨狗的又一个狗窝
+
+### News
+
+#### yewen.us 独立上线
+
+将以前指向组内的 yewen.us 拿出来作为私人空间使用, 工作的请访问 <ourfcr.info>
+
+#### 本站全面切换到 markdown
+
+使用 markdown 来管理本站, 并修改界面风格
+ 
+#### 界面风格扩展为适应 1280px 宽度
+ 
+考虑到现在朋友们的最低的分辨率大多都是 12' 笔记本的的 1280*800, 所以扩展本站适应宽度为 1280px.
+
+CSS 浏览器兼容现状 (支持的可以点击安装):
+
+ * 测试支持: [Chrome](http://www.google.com/chrome/eula.html?extra=devchannel&hl=zh-CN)
+ * 没有完整测试: Firefox, IE8, IE9
+ * 明确不支持: IE6, IE7
+ 
