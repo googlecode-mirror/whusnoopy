@@ -9,17 +9,15 @@ yewenus_tab_menu = [
   {
     header : ["工作笔记", "work.html"],
     items : [
-    ["测试机优化", "测试机优化"],
-    ["Shell 技巧", "Shell_编程技巧"],
     ["Vim 相关", "Vim_相关"],
-    ["SecureCRT", "SecureCRT_相关"],
     ]
   },
   {
     header : ["闲暇娱乐", "funny.html"],
     items : [
-    ["照片", "Building_记录照片"],
-    ["电子书", "电子书"],
+    ["音乐", "音乐"],
+    ["电影", "电影"],
+    ["读书", "读书"],
     ]
   },
   {
@@ -59,7 +57,7 @@ yewenus_tab_hover = function(tab_idx) {
   bar_body.appendChild(body_menu);
 
   var body_item = document.createElement("li");
-  body_item.style.width = 80*tab_idx + 'px';
+  body_item.style.width = 64 + 96*tab_idx + 'px';
   body_item.innerHTML = '&nbsp;';
   body_menu.appendChild(body_item);
 

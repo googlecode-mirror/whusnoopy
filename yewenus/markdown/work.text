@@ -1,0 +1,37 @@
+# 工作笔记
+
+## Vim 相关
+
+### 我的 vimrc 配置
+
+自己的 `vimrc` 配置, 不区分操作系统, 一个简化的配置
+
+    set nocompatible " 非 vi 兼容模式
+    syntax on " 色彩高亮
+    set number " 显示行数
+    set ruler " 显示当前位置于右下角
+    set backspace=2 " 设置 backspace 模式为标准
+    set showmatch " 显示配对括号
+    set incsearch " 增量查找
+    set hlsearch
+    set ai " 自动缩进
+    set si " 智能缩进
+    set cindent " C 风格缩进
+    set tabstop=4 " Tab 宽度
+    set softtabstop=4 " Tab 宽度
+    set shiftwidth=4 " Tab 宽度
+    set expandtab " 输入的 tab(\t) 均不保持为 tab 而转换为空格
+    set fileencodings=ucs-bom,utf-8,cp936,gb18030,big5,euc-jp,sjis,euc-kr,ucs-2le,latin1 "字符编码
+    set statusline=%F%m%r%h%w\ [FORMAT=%{&ff}]\ [TYPE=%Y]\ [POS=%04l,%04v][%p%%]\ [LEN=%L] " 状态栏格式
+    set laststatus=2 " 一直显示状态栏
+
+    " 插入模式切换
+    map &lt;F9&gt; :set paste!&lt;BAr&gt;set paste?&lt;CR&gt;
+
+    " 多 Tab 时翻页
+    map &lt;F12&gt; &lt;Esc&gt;:tabnext&lt;CR&gt;gi &lt;F11&gt; :tabprevious&lt;CR&gt;
+    imap &lt;F12&gt; &lt;Esc&gt;:tabnext&lt;CR&gt;gi &lt;F11&gt; &lt;Esc&gt;:tabprevious&lt;CR&gt;gi
+
+    map &lt;F12&gt; &lt;Esc&gt;:tabnext&lt;CR&gt;gi &lt;F12&gt; :tabnext&lt;CR&gt;
+    imap &lt;F12&gt; &lt;Esc&gt;:tabnext&lt;CR&gt;gi &lt;F12&gt; &lt;Esc&gt;:tabnext&lt;CR&gt;gi
+
