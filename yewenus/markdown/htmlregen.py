@@ -51,6 +51,11 @@ html_tail = '''
 </div>
 </center>
 
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F6b3ab3c84fa75abb51bb8e42e6087b9d' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
 </body>
 </html>
 '''

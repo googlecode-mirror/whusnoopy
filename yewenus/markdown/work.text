@@ -26,12 +26,12 @@
     set laststatus=2 " 一直显示状态栏
 
     " 插入模式切换
-    map &lt;F9&gt; :set paste!&lt;BAr&gt;set paste?&lt;CR&gt;
+    map <F9> :set paste!<BAr>set paste?<CR>
 
     " 多 Tab 时翻页
-    map &lt;F12&gt; &lt;Esc&gt;:tabnext&lt;CR&gt;gi &lt;F11&gt; :tabprevious&lt;CR&gt;
-    imap &lt;F12&gt; &lt;Esc&gt;:tabnext&lt;CR&gt;gi &lt;F11&gt; &lt;Esc&gt;:tabprevious&lt;CR&gt;gi
+    map <F12> <Esc>:tabnext<CR>gi <F11> :tabprevious<CR>
+    imap <F12> <Esc>:tabnext<CR>gi <F11> <Esc>:tabprevious<CR>gi
 
-    map &lt;F12&gt; &lt;Esc&gt;:tabnext&lt;CR&gt;gi &lt;F12&gt; :tabnext&lt;CR&gt;
-    imap &lt;F12&gt; &lt;Esc&gt;:tabnext&lt;CR&gt;gi &lt;F12&gt; &lt;Esc&gt;:tabnext&lt;CR&gt;gi
+    map <F12> <Esc>:tabnext<CR>gi <F12> :tabnext<CR>
+    imap <F12> <Esc>:tabnext<CR>gi <F12> <Esc>:tabnext<CR>gi
 
