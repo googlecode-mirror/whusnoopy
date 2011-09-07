@@ -1,5 +1,80 @@
 # 工作笔记
 
+## nginx + php + 搜索折腾记
+
+需求仅仅是想实现一个查询接口. 后台每天凌晨更新一份数据, 按
+<key1, key2, key3, value> 排序存储. Web 端可以查询所有 key1 对应的记录, 或者
+key1 + key3 的记录. 中间 key2 不提供查询接口, 但是也是个参与排序的 key.
+这里有个坑是按 key1+key3 查, value 也还是有多个.
+
+只会很土鳖的 php 和 python, 于是考虑 php 做 web, 后面用 python 来做查询.
+
+机器上没有 web server 和 php, 于是先现场编译安装, 没有 root 权限,
+所以尽可能简单的搞. 貌似现在 nginx 很火, 要不搞这个? 把 nginx, pcre, php 都下到
+/home/yewen/soft, 解压备用. (pcre 是一个库, nginx 需要这个库的支持才能读取跟
+php 连起来的部分配置, 中间踩坑的过程就不说了)
+
+    # 编译安装 nginx
+    cd ~/soft/nginx-1.1.1
+    ./configure --prefix=/home/yewen/nginx --with-pcre=/home/yewen/soft/pcre-8.13
+    make
+    make install
+    # 改配置
+    cd ~/nginx
+    vim conf/nginx.conf
+      # 此处修改端口号 (http/server/listen)
+      # 修改 php 支持 (去掉 http/server/location ~\.php 非 proxy 那一大段的注释)
+      # 修改 fastcgi_param 路径 /home/yewen/nginx/html$fastcgi_script_name;
+    # 直接启动
+    ./sbin/nginx
+
+    # 编译安装 php, 必须启用 fpm
+    cd ~/soft/php-5.3.8
+    ./configure --prefix=/home/yewen/php --enable-fastcgi --enable-fpm
+    make
+    make install
+    # 改配置
+    cp php.ini-production ~/php/etc/php.ini
+    cd ~/php
+    cp etc/php-fpm.conf.default etc/php-fpm.conf
+    vim etc/php-fpm.conf
+      # 将 user/group 改为本地用户
+      # 去掉 pm.min_spare_servers 和 pm.max_spare_servers 前面的注释并设置值
+    # 启动
+    ./sbin/php-fpm 
+
+写了个很简单的 php, 就是接受一个输入 key, 然后把这个 key 作为参数, system 调用
+python 处理, 输出到某临时文件, 然后 php 再读这个文件输出, python
+处理是用的最土鳖的扫描文件的方式, 而且一开始没假定文件按 key1, key2, key3
+的顺序排序, 所以查询是扫描整个文件, 对比 key 是否跟输入一致.
+后来发现这么搞实在不靠谱, 一次检索太慢了, 要数据规模稍微大点, 并发多点就崩溃了
+
+于是考虑把所有数据都加载到内存里来, 用 python 做一个 daemon, 然后 php 通过本机
+socket 跟这个 daemon 互动. 不会搞 socket, 于是先学 php 和 python 的 socket
+使用, 这个本来很简单, 但是因为我为了省事 php 编译的太简单, 居然不支持 socket
+方法, 问了下 felix021, 改用 fsockopen 搞定.
+
+这时候 python 是把所有数据 load 到内存, 用一个以 key1 为 key 的 dict 存储,
+dict 的每条记录是一个 list, 存储了所有 key1 对应的记录. 如果查询没带 key3,
+那就把 key1 对应的 list 做下格式化, 直接返回就行了; 如果是 key1 + key3 的查询,
+则把 key1 的 list 取出来, 做一次遍历, 看 key3 是否就是我们要的, 如果是,
+加入结果 list, 最后把这个结果 list 做格式化返回. 因为每个 key1
+对应的记录撑死也就几万条, 查询速度完全没有问题, 内存占用 3.2G. (吐槽下,
+服务器内存大就是好, 随便乱搞都没事)
+
+后来发现这台机器没法提供对外服务 (这么坑爹的事情这么晚才得到确认),
+换用一台台式机来处理, 这时候内存显然不能这么乱搞, 优化一下, 开始写人肉索引.
+内存里还是一个以 key1 为 key 的 dict, 只是 value 改成 key1 在原始文件里的偏移量.
+查询的时候, 打开文件跳到 key1 对应的偏移量挨条扫描, 直到到达 key1 结束的地方.
+速度还是很不错的, 因为文件操作毕竟不算多, 至少人肉感觉不出来有迟钝, 内存占用
+10M.
+
+把这个问题泛化下, 貌似就可以做面试题了: 一个简单的查询系统. 只要按某个 key
+有序, 一开始可以全内存搞, 扩大数据规模后就必须内存索引 + 磁盘文件,
+再大就要多级索引, 再大就分库. (我决定今年面试我一定要问这个问题, 如果看过我
+blog 的, 那就现场写实现, 如果不考虑做 list 格式化, 整个程序不超过 50 行)
+
+
 ## Vim 相关
 
 ### 我的 vimrc 配置
