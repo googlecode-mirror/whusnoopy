@@ -7,19 +7,16 @@
 #include <time.h>
 #include <math.h>
 
-enum LOG_LEVEL {
-    FATA = 0,
-    WARN = 1,
-    INFO = 2,
-    DEBUG = 3,
-};
-char log_str[4][9] = {
-    "FATA",
-    "WARN",
-    "INFO",
-    "DEBUG",
-};
-int debug_mode;
+#include "base/flags.h"
+#include "base/logging.h"
+#include "base/util.h"
+
+DEFINE_OPTIONAL_FLAGS(string, instance_file, \
+        "./data/instance_for_eval.txt", \
+        "the instance file for eval");
+DEFINE_OPTIONAL_FLAGS(string, model_file, \
+        "./output/model.txt", \
+        "the model file to eval");
 
 const int MAX_LINE_LEN = 1024000;
 
@@ -34,51 +31,6 @@ struct ins_node {
 };
 ins_node ins_res[MAX_INS_NUM];
 int ins_num;
-
-void LOG(int level, const char* format, ...) {
-    if (level >= DEBUG && debug_mode == 0) {
-        return;
-    }
-
-    char buffer[102400];
-    int pos = 0;
-
-    // add time
-    time_t t = time(NULL);
-    struct tm tm;
-    localtime_r(&t, &tm);
-    char buf[1024];
-    strftime(buf, sizeof(buf), "%H:%M:%S", &tm);
-    pos += sprintf(&buffer[pos], "%s ", buf);
-
-    // add level
-    pos += sprintf(&buffer[pos], "[%s] ", log_str[level]);
-
-    // add logger
-    va_list args;
-    va_start(args, format);
-    vsprintf(&buffer[pos], format, args);
-    va_end(args);
-
-    fprintf(stdout, "%s\n", buffer);
-
-    return;
-}
-
-void Usage() {
-    fprintf(stderr, "Usage: ./calc_auc instance_filename model_filename\n");
-    return;
-}
-
-char* getToken(char* &buf, const char split_char = '\t') {
-    char* ret = buf;
-    while (*buf != '\0' && *buf != '\n' && *buf != split_char) {
-        buf++;
-    }
-    *buf = '\0';
-    buf++;
-    return ret;
-}
 
 int loadModel(FILE* fp) {
     char buf[MAX_LINE_LEN] = {0};
@@ -100,9 +52,9 @@ int loadModel(FILE* fp) {
         mod_fea[id] = weight;
     }
 
-    LOG(DEBUG, "load [%u] feature weight", id);
+    LOGF(DEBUG, "load [%u] feature weight", id);
     for (int i = 1; i <= id; ++i) {
-        LOG(DEBUG, "fea[%d] -> %lf", i, mod_fea[i]);
+        LOGF(DEBUG, "fea[%d] -> %lf", i, mod_fea[i]);
     }
 
     return 0;
@@ -133,7 +85,7 @@ int loadInstance(FILE* fp) {
                 return -1;
             }
             ins_res[ins_num].weight += mod_fea[fea_id];
-            LOG(DEBUG, "ins [%d] has feature [%d] with weight [%f], "
+            LOGF(DEBUG, "ins [%d] has feature [%d] with weight [%f], "
                     "and sum weight of ins [%d] is [%f] now",
                     ins_num, fea_id, mod_fea[fea_id],
                     ins_num, ins_res[ins_num].weight);
@@ -163,7 +115,7 @@ double calcAuc() {
     double s0 = 0;
     int count = 0;
     for (int i = 0; i < ins_num; ++i) {
-        LOG(DEBUG, "ins [%d] -> num [%d], weight [%f], prob [%f]",
+        LOGF(DEBUG, "ins [%d] -> num [%d], weight [%f], prob [%f]",
                 i, ins_res[i].num, ins_res[i].weight, ins_res[i].prob);
         int this_num = abs(ins_res[i].num);
         if (ins_res[i].num < 0) {
@@ -174,7 +126,7 @@ double calcAuc() {
         }
 
         count += this_num;
-        LOG(DEBUG, "s0 [%lf] sum_pos [%lf] sum_neg [%lf]", s0, sum_pos, sum_neg);
+        LOGF(DEBUG, "s0 [%lf] sum_pos [%lf] sum_neg [%lf]", s0, sum_pos, sum_neg);
     }
 
     res = (s0 - (sum_pos*(sum_pos+1))/2.0)/(sum_pos*sum_neg);
@@ -183,34 +135,30 @@ double calcAuc() {
 }
 
 int main(int argc, char* argv[]) {
-    if (argc < 3) {
-        Usage();
-        return -1;
-    } else if (argc > 3) {
-        debug_mode = 1;
-    } else {
-        debug_mode = 0;
+    if (parseFlags(argc, argv)) {
+        LOG(FATAL) << "Cannot parse flags!" << endl;
+        return 1;
     }
 
-    FILE* mod_fp = fopen(argv[1], "r");
+    FILE* mod_fp = fopen(FLAGS_model_file.c_str(), "r");
     if (NULL == mod_fp) {
-        Usage();
+        printUsage();
         return -2;
     }
     if (0 != loadModel(mod_fp)) {
-        Usage();
+        printUsage();
         fclose(mod_fp);
         return -2;
     }
     fclose(mod_fp);
 
-    FILE* ins_fp = fopen(argv[2], "r");
+    FILE* ins_fp = fopen(FLAGS_instance_file.c_str(), "r");
     if (NULL == ins_fp) {
-        Usage();
+        printUsage();
         return -2;
     }
     if (0 != loadInstance(ins_fp)) {
-        Usage();
+        printUsage();
         fclose(ins_fp);
         return -3;
     }
@@ -218,7 +166,9 @@ int main(int argc, char* argv[]) {
 
     double auc_res = 0;
     auc_res = calcAuc();
-    LOG(INFO, "Calc auc by model [%s] to instance [%s]: %lf", argv[1], argv[2], auc_res);
+    LOGF(INFO, "Calc auc by model [%s] to instance [%s]: %lf", \
+            FLAGS_model_file.c_str(), FLAGS_instance_file.c_str(), \
+            auc_res);
 
     return 0;
 }
