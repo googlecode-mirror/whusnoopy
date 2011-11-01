@@ -1,12 +1,14 @@
 default : all
 
-all : .base .train .calc_auc
+all : .base .train .calc_auc .feature_extractor
 
 clean :
 	@make -C base clean
 	@make -C train clean
 	@make -C calc_auc clean
+	@make -C feature_extractor clean
 	@rm -rf bin
+	@rm -rf log/*
 
 install : all
 	@rm -rf bin
@@ -20,3 +22,6 @@ install : all
 
 .calc_auc :
 	make -C calc_auc
+
+.feature_extractor :
+	make -C feature_extractor
