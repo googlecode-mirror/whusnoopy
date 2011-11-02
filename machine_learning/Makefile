@@ -13,6 +13,10 @@ clean :
 install : all
 	@rm -rf bin
 	@mkdir bin
+	@mv calc_auc/calcAuc bin/
+	@mv train/trainModel bin/
+	@mv feature_extractor/feature_serialization bin/
+	@mv feature_extractor/feature_extractor bin/
 
 .base :
 	make -C base
