@@ -21,6 +21,13 @@ yewenus_tab_menu = [
     ]
   },
   {
+    header : ["招聘", "hiring.html"],
+    items : [
+    ["算法工程师", "算法工程师"],
+    ["C++后台研发工程师", "C++后台研发工程师"],
+    ]
+  },
+  {
     header : ["About", "about.html"],
     items : [
     ["关于本站", "关于本站"],
