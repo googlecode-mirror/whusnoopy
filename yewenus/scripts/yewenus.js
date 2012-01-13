@@ -7,6 +7,10 @@ yewenus_tab_menu = [
     ]
   },
   {
+    header : ["Blog", "blog/"],
+    items : []
+  },
+  {
     header : ["工作笔记", "work.html"],
     items : [
     ["Vim 相关", "Vim_相关"],
