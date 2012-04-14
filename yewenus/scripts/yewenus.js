@@ -14,6 +14,7 @@ yewenus_tab_menu = [
     header : ["工作笔记", "work.html"],
     items : [
     ["Vim 相关", "Vim_相关"],
+    ["Linux 笔记", "Linux_基本命令笔记"],
     ]
   },
   {
