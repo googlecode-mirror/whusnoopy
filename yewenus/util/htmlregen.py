@@ -3,7 +3,6 @@
 
 import sys
 
-
 html_pre = '''<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -45,7 +44,7 @@ html_tail = '''
 </div>
 
 <div id="ft">
-  <hr width=1240 size=0 />
+  <hr width="1240px" size="0" />
   Powered by <a href="http://daringfireball.net/projects/markdown/">Markdown</a> and <a href="/about.html">yewen.us</a>.
   2011, <a href="http://hi.baidu.com/whusnoopy">Wen YE</a><br /><br />
 </div>
@@ -87,18 +86,19 @@ def main():
     # 目录支持
     if line[0] == '<' and line[1] == 'h' and line[3] == '>':
       tag = line[4:-6]
-      tag_href= tag.replace(' ', '_')
+      tag_href = tag.replace(' ', '_')
       buf += '\n<a name="%s"></a><a name="%s"></a>\n' % (tag_href, tag)
 
       if int(line[2]) < 4:
         level = int(line[2])
-          
+
         if level > nav_lev:
-          nav += "%s<ul>\n" % ('  '*level)
+          nav += "%s<ul>\n" % (' ' * 2 * level)
         if level < nav_lev:
-          nav += "%s</ul>\n" % ('  '*nav_lev)
+          nav += "%s</ul>\n" % (' ' * 2 * nav_lev)
         nav_lev = level
-        nav += ' %s<li><a href="#%s">%s</a></li>\n' % ('  '*level, tag_href, tag)
+        nav += ' %s<li><a href="#%s">%s</a></li>\n' % \
+               (' ' * 2 * level, tag_href, tag)
 
     # 表格支持
     # TODO
@@ -116,20 +116,22 @@ def main():
     # Notice 支持
     if len(line) > 8 and line[0:8] == "<p><ntc>":
       tmp = line
-      line = '<p><center><div class="ntc" style="width:80%%">%s</div></center></p>\n' % tmp[8:-5]
+      line = '<center><p><div class="ntc" style="width:80%%">' \
+             + tmp[8:-11] + '</div></p></center>\n'
 
     # 红 code 部分支持
     while line.find('<rc>') != -1:
       tmp = line
       st = tmp.find('<rc>')
       ed = tmp.find('</rc>')
-      line = tmp[0:st] + '<code style="color:red">' + tmp[st+4:ed] + '</code>' + tmp[ed+5:]
+      line = tmp[0:st] + '<code style="color:red">' \
+             + tmp[st + 4:ed] + '</code>' + tmp[ed + 5:]
 
     buf += line
   pass
 
   while nav_lev > 1:
-    nav += "%s</ul>\n" % ('  '*nav_lev)
+    nav += "%s</ul>\n" % (' ' * 2 * nav_lev)
     nav_lev -= 1
 
   nav += '  </div>\n</div>\n'
@@ -140,10 +142,9 @@ def main():
   out_str += buf
   out_str += html_tail
   print out_str
-    
+
   return 0
 
 
 if __name__ == "__main__":
   sys.exit(main())
-
